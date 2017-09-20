@@ -1,8 +1,8 @@
-# vue-system
+# Agenda 7Virtual
 
 > A Vue.js + router + resource + vuex + bulma project
 
-Com o console do node aberto, execute os comandos
+Com o console do node aberto, execute os comandos:
 
 ## Build Setup
 
