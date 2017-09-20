@@ -153,7 +153,7 @@
               <label class="label">Usuário</label>
               <div>
                   <p class="control">
-                    <input class="input" placeholder="user" v-model="">
+                    <input class="input" placeholder="user" v-model="selected.idUsuario">
                   </p>
               </div>
             </div>
@@ -179,7 +179,7 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
 
-  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -209,7 +209,7 @@
           { text: 'WEB', value: 2 },
           { text: 'MOBILE', value: 3 }
         ],
-        idUsuario: 'Rodrigo',
+        idUsuario: 1,
         projetos: [
           { text: 'PROJETO INICIAL', value: 1 }
         ]
@@ -351,9 +351,11 @@
             response=>{
               this.$set('selected',{})
               this.$set('showModalNew',false)
+              console.log()
             },
             error=>{
               console.error(error)
+              console.log()
             }
             ).finally(
               this.loadCompromissos()
