@@ -355,7 +355,7 @@
        salvarCompromisso(){
         // this.validar()
            
-        var err = ''
+        var err, resp = ''
            
         if (this.selected.id!=null){  //EDITAR
           this.$http.put(ENDPOINT + `api/comp/obterComp/${this.selected.id}`,this.selected).then(
@@ -371,23 +371,25 @@
             )
           }
           else { //NOVO
-            this.$http.post(ENDPOINT + `api/comp/novoCab`,this.selected
+            this.$http.post(ENDPOINT + `api/comp/novoCab`,this.selected,
             ).then(
             response=>{
-                
-              this.err = JSON.stringify(response.json())
               this.$set('selected',{})
               this.$set('showModalNew',false)
-              
+              this.err = JSON.stringify(response.json())
+              // alert(this.err)
+              swal({
+              html: '<b>' + this.err + '</b>',
+              confirmButtonText:
+                '<i class="fa fa-thumbs-up"></i> Ok!',
+              })
             },
             error=>{
               console.log(response.json())
             }).finally(function () {
               this.loadCompromissos()
             })
-            alert(this.err)
-              
-              
+            
           }
           
       },
