@@ -1,5 +1,8 @@
 ﻿<template>
-  <a class="fixo button is-large is-danger is-loading" v-show="isLoading">Loading</a>
+  <i class="fixo fa fa-spinner fa-pulse fa-5x fa-fw" v-show="isLoading"></i>
+  <span class="fixo sr-only" v-show="isLoading">Carregando...</span>
+  
+    
   <div class="container">
     <h1 class="title">{{title}}</h1>
     <div class="columns">
@@ -29,7 +32,7 @@
                 <th>Projeto</th>
                 <th>Plataforma</th>
                 <th>Usuário</th>
-                <th>Ações</th>
+                <!-- <th>Ações</th> -->
 
             </thead>
             <tbody>
@@ -42,8 +45,8 @@
                 <td v-link="{ path: '/cdetalhe' }">{{compromisso.projeto}}</td>
                 <td v-link="{ path: '/cdetalhe' }">{{compromisso.plataforma}}</td>
                 <td v-link="{ path: '/cdetalhe' }">{{compromisso.usuario}}</td>
-                <td class="is-icon">
-                  <a href="#" @click.prevent="obsCompr(compromisso)">
+                <!-- <td class="is-icon">
+                 <a href="#" @click.prevent="obsCompr(compromisso)">
                     <i class="fa fa-eye"></i>
                   </a>
                   <a href="#" @click.prevent="editarCompromisso(compromisso)">
@@ -52,7 +55,7 @@
                   <a href="#" @click.prevent="removerCompromisso(compromisso)">
                     <i class="fa fa-trash"></i>
                   </a>
-                </td>
+                </td> -->
               </tr>
             </tbody>
         </table>
@@ -149,12 +152,14 @@
                   </select>
               </div>
             </div>
-            <div class="column is-4">
+            <div class="column">
               <label class="label">Usuário</label>
-              <div>
-                  <p class="control">
-                    <input class="input" placeholder="user" v-model="selected.idUsuario">
-                  </p>
+              <div class="select">
+                  <select v-model="selected.idUsuario">
+                      <option v-for="usuario in usuarios" :value="usuario.value">
+                        {{ usuario.text }}
+                      </option>
+                  </select>
               </div>
             </div>
             
@@ -179,7 +184,8 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
 
-  const ENDPOINT = 'http://192.168.0.115:32688/'
+  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  // const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -209,9 +215,11 @@
           { text: 'WEB', value: 2 },
           { text: 'MOBILE', value: 3 }
         ],
-        idUsuario: 1,
+        usuarios: [
+          { text: 'KEL', value: 4}
+        ],
         projetos: [
-          { text: 'PROJETO INICIAL', value: 1 }
+          { text: 'PROJETO INICIAL', value: 3 }
         ]
       }
     },
@@ -332,7 +340,7 @@
                          return false; 
                      }
                       else{
-                      self.$http.delete(`/compromissos/${compromisso.id}`).then(
+                      self.$http.delete(ENDPOINT + `api/comp/obterComp/${compromisso.id}`).then(
                       result=>{
                         swal(
                             'Deletado!',
@@ -346,35 +354,42 @@
        },
        salvarCompromisso(){
         // this.validar()
+           
+        var err = ''
+           
         if (this.selected.id!=null){  //EDITAR
           this.$http.put(ENDPOINT + `api/comp/obterComp/${this.selected.id}`,this.selected).then(
             response=>{
               this.$set('selected',{})
               this.$set('showModalNew',false)
-              console.log()
             },
             error=>{
               console.error(error)
-              console.log()
             }
             ).finally(
               this.loadCompromissos()
             )
           }
-          else
-          { //NOVO
-            this.$http.post(ENDPOINT + `api/comp/novoCab`,this.selected).then(
+          else { //NOVO
+            this.$http.post(ENDPOINT + `api/comp/novoCab`,this.selected
+            ).then(
             response=>{
+                
+              this.err = JSON.stringify(response.json())
               this.$set('selected',{})
               this.$set('showModalNew',false)
+              
             },
             error=>{
-              console.error(error)
-            }
-            ).finally(
+              console.log(response.json())
+            }).finally(function () {
               this.loadCompromissos()
-            )
+            })
+            alert(this.err)
+              
+              
           }
+          
       },
         
       obsCompr(compromisso) {

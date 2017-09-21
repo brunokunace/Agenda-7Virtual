@@ -33,10 +33,12 @@
             <router-view></router-view>
             </div>
         </div>
+        
+        <!--
 
         <footer>
             @ 2017. <a href="http://www.7virtual.com.br/" target="_blank" class="link">7Virtual</a>
-        </footer>
+        </footer>-->
 
         
             
