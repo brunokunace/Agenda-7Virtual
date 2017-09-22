@@ -189,9 +189,11 @@
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
-
-  // const ENDPOINT = 'http://192.168.0.200/helpdesk/'
-  const ENDPOINT = 'http://192.168.0.115:32688/'
+    
+  //produção:
+  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  //debug:
+  // const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -413,6 +415,7 @@
                         html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
                         type: "error",  
                     })
+                //=>CAPTURAR O RETORNO DO SERVIDOR NA MENSAGEM
                 /*this.err = JSON.stringify(error)
                 swal({
                   html: '<strong>' + this.err + '</strong>',
