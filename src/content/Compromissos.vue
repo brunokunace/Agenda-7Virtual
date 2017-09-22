@@ -86,7 +86,7 @@
             <div class="column">
               <label class="label">Tipo</label>
               <div class="select">
-                  <select v-model="selected.idCompTipo">
+                  <select v-model="comp.idCompTipo">
                       <option v-for="tipo in tipos" :value="tipo.idCompTipo">
                         {{ tipo.nome }}
                       </option>
@@ -98,7 +98,7 @@
             <div class="column is-4">
               <label class="label">Status</label>
               <div class="select">
-                  <select v-model="selected.idStatus">
+                  <select v-model="comp.idStatus">
                       <option v-for="stat in status" :value="stat.idStatus">
                         {{ stat.nome }}
                       </option>
@@ -113,7 +113,7 @@
           <div class="column">
           <label class="label">Título</label>
           <p class="control">
-            <input class="input" placeholder="Defina um nome para o projeto..." v-model="selected.titulo">
+            <input class="input" placeholder="Defina um nome para o projeto..." v-model="comp.titulo">
           </p>
           <br>
               </div>
@@ -132,20 +132,20 @@
               </div>
             </div>
           <div class="columns">
-            <div class="column">
+            <!--<div class="column">
               <label class="label">Plataforma</label>
               <div class="select">
-                  <select><!-- v-model="selected.plataforma" -->
+                  <select><!-- v-model="selected.plataforma" --
                       <option v-for="plataforma in plataformas">
                         {{ plataforma.text }}
                       </option>
                   </select>
               </div>
-            </div>
+            </div>-->
             <div class="column">
               <label class="label">Prioridade</label>
               <div class="select">
-                  <select v-model="selected.numPrioridade">
+                  <select v-model="comp.numPrioridade">
                       <option v-for="prioridade in prioridades" :value="prioridade.value">
                         {{ prioridade.text }}
                       </option>
@@ -155,7 +155,7 @@
             <div class="column">
               <label class="label">Usuário</label>
               <div class="select">
-                  <select v-model="selected.idUsuario">
+                  <select v-model="comp.idUsuario">
                       <option v-for="usuario in usuarios" :value="usuario.value">
                         {{ usuario.text }}
                       </option>
@@ -164,7 +164,13 @@
             </div>
             
           </div>
+            
+          <label class="label">Detalhe</label>
           
+          <p class="control">
+            <textarea class="textarea" placeholder="escreva..." v-model="comp.detalhes"></textarea>
+          </p>  
+        
           <br>
           
         </section>
@@ -184,8 +190,8 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
 
-  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
-  // const ENDPOINT = 'http://192.168.0.115:32688/'
+  // const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -219,9 +225,23 @@
         usuarios: [
           { text: 'KEL', value: 4}
         ],
-        projetos: [
+        /*projetos: [
           { text: 'PROJETO INICIAL', value: 3 }
-        ]
+        ],*/
+        comp: {
+              
+              "idCompTipo": 3,
+              "idUsuario": 4,
+              "idStatus": 1,
+              "idProjeto": 3,
+              "titulo": "teste JSON",
+              "numPrioridade": 4,
+              "compromissosDet": [
+                  {
+                      "detalhes": "novo....",
+                  }
+              ]    
+        }
       }
     },
     methods: {  
@@ -364,7 +384,7 @@
                  })
        },
        salvarCompromisso(){
-        this.validar()
+        // this.validar()
            
         var err = ''
            
@@ -382,18 +402,17 @@
             )
           }
           else { //NOVO
-           this.$http.post(ENDPOINT + 'api/comp/novoCab',this.selected )
+           this.$http.post(ENDPOINT + 'api/comp/novoCab',this.comp)
              .then((response) => {
-                this.$set('selected',{})
+                // this.$set('selected',{})
                 this.$set('showModalNew',false)
-                console.log(response.data);  
+                console.log(response.data)
              })
              .catch((error) => {
-               swal(
-                  'Erro!',
-                  'Falha ao salvar sua solicitação',
-                  'error'
-               )
+               swal({   title: `Falha ao enviar sua solicitação`,
+                        html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
+                        type: "error",  
+                    })
                 /*this.err = JSON.stringify(error)
                 swal({
                   html: '<strong>' + this.err + '</strong>',
