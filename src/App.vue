@@ -46,6 +46,9 @@
 </template>
 <script>
 import store from './vuex/store'
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
 
 export default {
   name:'VueSystem',

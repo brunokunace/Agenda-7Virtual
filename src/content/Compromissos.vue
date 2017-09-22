@@ -184,8 +184,8 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
 
-  // const ENDPOINT = 'http://192.168.0.200/helpdesk/'
-  const ENDPOINT = 'http://192.168.0.115:32688/'
+  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  // const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -211,6 +211,7 @@
           { text: 'PRA ONTEM!', value: 4 }
         ],
         plataformas: [
+          { text: '', value: 0},
           { text: 'DESKTOP', value: 1},
           { text: 'WEB', value: 2 },
           { text: 'MOBILE', value: 3 }
@@ -225,22 +226,32 @@
     },
     methods: {  
       validar() {
-        if (this.selected.tipo==null || this.selected.tipo=='') {
+        
+        if (this.selected.idCompTipo==null || this.selected.idCompTipo=='') {
           swal(
             'Oopa...',
             'Por favor, preencha o tipo do compromisso!',
             'error'
           )
-          this.selected.tipo.focus();
+          this.selected.idCompTipo.focus();
           return false
         }
-        if (this.selected.status==null || this.selected.status=='') {
+        if (this.selected.idStatus==null || this.selected.idStatus=='') {
           swal(
             'Por favor, preencha o status!',
             'Ahh vamos lá, vamos fazer o serviço direito!',
             'error'
           )
-          this.selected.status.focus();
+          this.selected.idStatus.focus();
+          return false
+        }
+        if (this.selected.titulo==null || this.selected.titulo=='') {
+          swal(
+            'Oopa...',
+            'Por favor, preencha o tipo do compromisso!',
+            'error'
+          )
+          this.selected.titulo.focus();
           return false
         }
         if (this.selected.numPrioridade==null || this.selected.numPrioridade=='') {
@@ -353,7 +364,7 @@
                  })
        },
        salvarCompromisso(){
-        // this.validar()
+        this.validar()
            
         var err = ''
            

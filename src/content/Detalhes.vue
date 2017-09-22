@@ -1,38 +1,127 @@
 ﻿<template>
-   <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.idComp}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.titulo}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.tipoComp}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.status}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.numPrioridade}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.projeto}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.plataforma}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.usuario}}</td>
-                <!-- <td class="is-icon">
+  <i class="fixo fa fa-spinner fa-pulse fa-5x fa-fw" v-show="isLoading"></i>
+  <span class="fixo sr-only" v-show="isLoading">Carregando...</span>
+  <div class="container">
+      <!-- cabeçario -->
+    <div class="card" style="width: 100%;">
+      <header class="card-header">
+        <p class="card-header-title">
+          Compromisso
+        </p>
+      </header>
+      <div class="card-content">
+        <section>
+            
+          <div class="columns">
+              
+            <div class="column">
+              <label class="label">Data:</label>
+              <div v-show="compromissos.dataHora"></div>
+            </div>
+              
+            <div class="column">
+              <label class="label">Tipo:</label>
+              
+            </div>
+              
+            <div class="column is-4">
+              <label class="label">Status:</label>
+              
+            </div>
+              
+          </div>
+          
+          <div class="columns">
+            <div class="column">
+              <label class="label">Título:</label>
+
+            </div>
+            <div class="column is-4">
+              <label class="label">Projeto:</label>
+
+            </div>
+          </div>
+            
+        
+          <div class="columns">
+            <div class="column">
+              <label class="label">Plataforma:</label>
+              
+            </div>
+            <div class="column">
+              <label class="label">Prioridade:</label>
+              
+            </div>
+            <div class="column">
+              <label class="label">Usuário:</label>
+              
+            </div> 
+          </div>
+          
+          <br>
+          
+        </section>
+      </div>
+      <!--<footer class="card-footer">
+        <a href="#" class="card-footer-item">Save</a>
+        <a href="#" class="card-footer-item">Edit</a>
+        <a href="#" class="card-footer-item">Delete</a>
+      </footer>-->
+    </div>
+      
+    <br>
+      <!-- detalhes -->
+      
+    <table class="table is-narrow is-bordered is-mobile">
+            <thead>
+                <th>Cód</th>
+                <th>Mensagem</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+                
+
+            </thead>
+            <tbody>
+              <tr v-for="compromisso in compromissos">
+                <td>{{compromisso.idComp}}</td>
+                <td>{{compromisso.titulo}}</td>
+                <td>{{compromisso.usuario}}</td>
+                <td class="is-icon">
                  <a href="#" @click.prevent="obsCompr(compromisso)">
                     <i class="fa fa-eye"></i>
                   </a>
                   <a href="#" @click.prevent="editarCompromisso(compromisso)">
-                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-plus"></i>
                   </a>
-                  <a href="#" @click.prevent="removerCompromisso(compromisso)">
-                    <i class="fa fa-trash"></i>
-                  </a>
-                </td> -->
+                 <br> 
+                </td>
               </tr>
+            </tbody>
+      </table>
+ </div>   
 </template>
 
 <script>
+
+import axios from 'axios'
+
+const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+// const ENDPOINT = 'http://192.168.0.115:32688/'
+
+  var moment = require('moment');
+  require("moment/min/locales.min");
+  moment.locale('pt-br');
+
+
 export default {
-    name: 'Compromissos',
+    name: 'CompromissosDet',
     data () {
       return {
         isLoading: false,
-        title: 'Compromissos',
+        title: 'Detalhes',
         search: '',
         compromissos: [],
-        page: 1,
-        total: 0,
+        compromissosDet: [],
         selected: {},
         itensPerPage: 10,
         showModalNew: false,
@@ -59,18 +148,24 @@ export default {
       }
     },
     methods: {
+      showLoading(){
+        this.isLoading=true;
+      },
+      hideLoading(){
+        this.isLoading=false;
+      },
       loadCompromissos(){
 
         let t = this
         this.showLoading()
 
-        let qString = "";
+        let qString = "1";
 
         if (this.search){
           qString = `&q=${this.search}`
         }
 
-        this.$http.get(ENDPOINT + `api/comp/obterComp?${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterComp?idComp=${qString}`).then(
          response=>{
            t.compromissos = response.json()
          },
@@ -81,6 +176,43 @@ export default {
         })
 
        }
+    },
+    loadDetahes(){
+
+        let t = this
+        this.showLoading()
+
+        let qString = "";
+
+        if (this.search){
+          qString = `&q=${this.search}`
+        }
+
+        this.$http.get(ENDPOINT + `api/comp/obterComp?idCompDet=${qString}`).then(
+         response=>{
+           t.compromissos = response.json()
+         },
+         error=>{
+           console.log(error)
+         }).finally(function () {
+          t.hideLoading();
+        })
+
+       
+    },
+    obsCompr(compromisso) {
+        swal({
+          title: 'Anotações sobre este compromisso',
+          type: 'info',
+          html: '<p style="font-size:20px">' + `${compromisso.obs}` + '</p>',
+          showCloseButton: true,
+          confirmButtonText:
+            '<i class="fa fa-thumbs-up"></i> Ok!',
+        })
+    },
+    created(){
+      let t = this
+      t.loadCompromissos()
     }
 }
 </script>
