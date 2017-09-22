@@ -184,8 +184,8 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
 
-  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
-  // const ENDPOINT = 'http://192.168.0.115:32688/'
+  // const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  const ENDPOINT = 'http://192.168.0.115:32688/'
 
   export default {
     name: 'Compromissos',
@@ -355,7 +355,7 @@
        salvarCompromisso(){
         // this.validar()
            
-        var err, resp = ''
+        var err = ''
            
         if (this.selected.id!=null){  //EDITAR
           this.$http.put(ENDPOINT + `api/comp/obterComp/${this.selected.id}`,this.selected).then(
@@ -371,27 +371,29 @@
             )
           }
           else { //NOVO
-            this.$http.post(ENDPOINT + `api/comp/novoCab`,this.selected,
-            ).then(
-            response=>{
-              this.$set('selected',{})
-              this.$set('showModalNew',false)
-              this.err = JSON.stringify(response.json())
-              // alert(this.err)
-              swal({
-              html: '<b>' + this.err + '</b>',
-              confirmButtonText:
-                '<i class="fa fa-thumbs-up"></i> Ok!',
-              })
-            },
-            error=>{
-              console.log(response.json())
-            }).finally(function () {
+           this.$http.post(ENDPOINT + 'api/comp/novoCab',this.selected )
+             .then((response) => {
+                this.$set('selected',{})
+                this.$set('showModalNew',false)
+                console.log(response.data);  
+             })
+             .catch((error) => {
+               swal(
+                  'Erro!',
+                  'Falha ao salvar sua solicitação',
+                  'error'
+               )
+                /*this.err = JSON.stringify(error)
+                swal({
+                  html: '<strong>' + this.err + '</strong>',
+                  confirmButtonText:
+                    '<i class="fa fa-thumbs-up"></i> Ok!',
+                }) */ 
+                console.log(error);
+             }).finally(function () {
               this.loadCompromissos()
-            })
-            
+             })
           }
-          
       },
         
       obsCompr(compromisso) {
