@@ -182,13 +182,13 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = "";
+        let qString = 398;
 
         if (this.search){
           qString = `&q=${this.search}`
         }
 
-        this.$http.get(ENDPOINT + `api/comp/obterComp?idCompDet=${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterComp?idComp=${qString}`).then(
          response=>{
            t.compromissos = response.json()
          },

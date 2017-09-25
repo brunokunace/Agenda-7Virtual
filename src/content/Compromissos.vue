@@ -91,7 +91,7 @@
                         {{ tipo.nome }}
                       </option>
                   </select>
-                  <!-- <span>Selecionado: {{ selected.$id }}</span> -->
+                  <span>Selecionado: {{ comp.idCompTipo }}</span>
               </div>
             </div>
               
@@ -103,7 +103,7 @@
                         {{ stat.nome }}
                       </option>
                   </select>
-                  <!-- <span>Selecionado: {{ selected.status }}</span> -->
+                  <span>Selecionado: {{ comp.idStatus }}</span>
               </div>
             </div>
               
@@ -120,7 +120,7 @@
           <div class="column is-4">
           <label class="label">Projeto</label>
             <div class="select">
-              <select v-model="selected.idProjeto">
+              <select v-model="comp.idProjeto">
                   <option v-for="projeto in projetos" :value="projeto.value">
                     {{ projeto.text }}
                   </option>
@@ -168,9 +168,9 @@
           <label class="label">Detalhe</label>
           
           <p class="control">
-            <textarea class="textarea" placeholder="escreva..." v-model="comp.detalhes"></textarea>
-          </p>  
-        
+            <textarea class="textarea" placeholder="escreva o comentário..." v-model="comp.compromissosDet[0].detalhes"></textarea>
+          </p>
+          <span>Digitado: {{ comp.compromissosDet[0].detalhes}}</span>
           <br>
           
         </section>
@@ -227,26 +227,33 @@
         usuarios: [
           { text: 'KEL', value: 4}
         ],
-        /*projetos: [
-          { text: 'PROJETO INICIAL', value: 3 }
-        ],*/
+        projetos: [
+          { text: 'PDV PC', value: 3 }
+        ],
         comp: {
               
-              "idCompTipo": 3,
-              "idUsuario": 4,
-              "idStatus": 1,
-              "idProjeto": 3,
-              "titulo": "teste JSON",
-              "numPrioridade": 4,
-              "compromissosDet": [
-                  {
-                      "detalhes": "novo....",
-                  }
-              ]    
+              "idCompTipo": '',
+              "idUsuario": '',
+              "idStatus": '',
+              "idProjeto": '',
+              "titulo": '',
+              "numPrioridade": '',
+              "compromissosDet": [{}]
+                  
         }
+          
       }
+      
     },
-    methods: {  
+    /*computed: {
+      enviarDet(){
+          compromissosDet.detalhes.push()
+      }  
+    },*/
+    methods: {
+      enviarDet(){
+          this.comp.compromissosDet.push( { detalhes: this.detalhes } )
+      },
       validar() {
         
         if (this.selected.idCompTipo==null || this.selected.idCompTipo=='') {
@@ -406,9 +413,9 @@
           else { //NOVO
            this.$http.post(ENDPOINT + 'api/comp/novoCab',this.comp)
              .then((response) => {
-                // this.$set('selected',{})
+                this.$set('comp',{})
                 this.$set('showModalNew',false)
-                console.log(response.data)
+                console.log(response.body)
              })
              .catch((error) => {
                swal({   title: `Falha ao enviar sua solicitação`,
