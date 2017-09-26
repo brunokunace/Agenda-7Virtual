@@ -10,6 +10,8 @@
         </p>
       </header>
       <div class="card-content">
+          
+      
         <section>
             
           <div class="columns">
@@ -70,22 +72,28 @@
     </div>
       
     <br>
+      
+    <h2>{{ title }}</h2>
       <!-- detalhes -->
       
     <table class="table is-narrow is-bordered is-mobile">
             <thead>
                 <th>Cód</th>
-                <th>Mensagem</th>
+                <th>Abertura</th>
+                <th>Data/Hora Atendimento</th>
                 <th>Usuário</th>
+                <th>Mensagem</th>
                 <th>Ações</th>
                 
 
             </thead>
             <tbody>
-              <tr v-for="compromisso in compromissos">
+              <tr v-for="compromisso in compromissosDet">
                 <td>{{compromisso.idComp}}</td>
-                <td>{{compromisso.titulo}}</td>
-                <td>{{compromisso.usuario}}</td>
+                <td>{{compromisso.dataHoraAgend}}</td>
+                <td>{{compromisso.dataHoraAtend}}</td>
+                <td>{{compromisso.idUsuario}}</td>
+                <td><strong>{{compromisso.detalhes}}</strong></td>
                 <td class="is-icon">
                  <a href="#" @click.prevent="obsCompr(compromisso)">
                     <i class="fa fa-eye"></i>
@@ -104,8 +112,9 @@
 <script>
 
 import axios from 'axios'
-
+//produção
 const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+//debug
 // const ENDPOINT = 'http://192.168.0.115:32688/'
 
   var moment = require('moment');
@@ -118,7 +127,7 @@ export default {
     data () {
       return {
         isLoading: false,
-        title: 'Detalhes',
+        title: 'Tópicos',
         search: '',
         compromissos: [],
         compromissosDet: [],
@@ -144,7 +153,7 @@ export default {
         ],
         projetos: [
           { text: 'PROJETO INICIAL', value: 3 }
-        ]
+        ],
       }
     },
     methods: {
@@ -159,7 +168,7 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = "1";
+        let qString = 13;
 
         if (this.search){
           qString = `&q=${this.search}`
@@ -175,22 +184,21 @@ export default {
           t.hideLoading();
         })
 
-       }
-    },
-    loadDetahes(){
+       },
+      loadDetahes(){
 
         let t = this
         this.showLoading()
 
-        let qString = 398;
+        let qString = 450;
 
         if (this.search){
           qString = `&q=${this.search}`
         }
 
-        this.$http.get(ENDPOINT + `api/comp/obterComp?idComp=${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterCompDet?idComp=${qString}`).then(
          response=>{
-           t.compromissos = response.json()
+           t.compromissosDet = response.json()
          },
          error=>{
            console.log(error)
@@ -199,20 +207,28 @@ export default {
         })
 
        
-    },
-    obsCompr(compromisso) {
-        swal({
-          title: 'Anotações sobre este compromisso',
-          type: 'info',
-          html: '<p style="font-size:20px">' + `${compromisso.obs}` + '</p>',
-          showCloseButton: true,
-          confirmButtonText:
-            '<i class="fa fa-thumbs-up"></i> Ok!',
-        })
+       },
+       obsCompr(compromisso) {
+            swal({
+              title: 'Mensagens',
+              type: 'info',
+              html: '<p style="font-size:20px">' + `${compromisso.detalhes}` + '</p>',
+              showCloseButton: true,
+              confirmButtonText:
+                '<i class="fa fa-thumbs-up"></i> Ok!',
+            })
+       },
     },
     created(){
       let t = this
       t.loadCompromissos()
+      t.loadDetahes()
     }
 }
 </script>
+
+<style scoped>
+    h2 {
+        font-size: 35px;
+    }
+</style>

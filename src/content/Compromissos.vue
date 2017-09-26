@@ -37,14 +37,15 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.idComp}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.titulo}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.tipoComp}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.status}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.numPrioridade}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.projeto}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.plataforma}}</td>
-                <td v-link="{ path: '/cdetalhe' }">{{compromisso.usuario}}</td>
+                <td @click.prevent="carregarComp(compromisso)"><!-- v-link="{ path: '/cdetalhe' }" -->
+                    {{compromisso.idComp}}</td>
+                <td>{{compromisso.titulo}}</td>
+                <td>{{compromisso.tipoComp}}</td>
+                <td>{{compromisso.status}}</td>
+                <td>{{compromisso.numPrioridade}}</td>
+                <td>{{compromisso.projeto}}</td>
+                <td>{{compromisso.plataforma}}</td>
+                <td>{{compromisso.usuario}}</td>
                 <!-- <td class="is-icon">
                  <a href="#" @click.prevent="obsCompr(compromisso)">
                     <i class="fa fa-eye"></i>
@@ -168,9 +169,9 @@
           <label class="label">Detalhe</label>
           
           <p class="control">
-            <textarea class="textarea" placeholder="escreva o comentário..." v-model="comp.compromissosDet[0].detalhes"></textarea>
+            <textarea class="textarea" placeholder="escreva o comentário..." v-model="msg"></textarea>
           </p>
-          <span>Digitado: {{ comp.compromissosDet[0].detalhes}}</span>
+          
           <br>
           
         </section>
@@ -192,6 +193,7 @@
     
   //produção:
   const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  
   //debug:
   // const ENDPOINT = 'http://192.168.0.115:32688/'
 
@@ -203,8 +205,6 @@
         title: 'Compromissos',
         search: '',
         compromissos: [],
-        page: 1,
-        total: 0,
         selected: {},
         itensPerPage: 10,
         showModalNew: false,
@@ -233,27 +233,18 @@
         comp: {
               
               "idCompTipo": '',
-              "idUsuario": '',
               "idStatus": '',
-              "idProjeto": '',
+              "idProjeto": 3,
               "titulo": '',
               "numPrioridade": '',
-              "compromissosDet": [{}]
+              "idUsuario": 4,
+              "compromissosDet": []
                   
-        }
-          
-      }
-      
+        },
+        msg: ''
+      } 
     },
-    /*computed: {
-      enviarDet(){
-          compromissosDet.detalhes.push()
-      }  
-    },*/
     methods: {
-      enviarDet(){
-          this.comp.compromissosDet.push( { detalhes: this.detalhes } )
-      },
       validar() {
         
         if (this.selected.idCompTipo==null || this.selected.idCompTipo=='') {
@@ -396,7 +387,11 @@
         // this.validar()
            
         var err = ''
-           
+        
+        det = {detalhes: this.msg}
+        this.comp.compromissosDet.push(det)
+        
+        
         if (this.selected.id!=null){  //EDITAR
           this.$http.put(ENDPOINT + `api/comp/obterComp/${this.selected.id}`,this.selected).then(
             response=>{
@@ -414,6 +409,7 @@
            this.$http.post(ENDPOINT + 'api/comp/novoCab',this.comp)
              .then((response) => {
                 this.$set('comp',{})
+                this.$set('msg','')
                 this.$set('showModalNew',false)
                 console.log(response.body)
              })
@@ -446,6 +442,8 @@
             '<i class="fa fa-thumbs-up"></i> Ok!',
         })
       },
+      carregarComp(compromisso) {
+      }
     },
     created(){
       let t = this
