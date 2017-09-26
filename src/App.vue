@@ -19,7 +19,7 @@
                 </span>
                 <span>Test</span>
             </a>
-            <a v-link="{ path: '/cpedido' }" class="button is-dark" disabled>
+            <a v-link="{ path: '/cdetalhes' }" class="button is-dark" disabled>
                 <span class="icon">
                 <i class="fa fa-barcode"></i>
                 </span>

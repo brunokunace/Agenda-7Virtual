@@ -37,7 +37,7 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td @click.prevent="carregarComp(compromisso)"><!-- v-link="{ path: '/cdetalhe' }" -->
+                <td v-link="{ path: '/cdetalhe' }"> <!-- @click.prevent="carregarComp(compromisso)" -->
                     {{compromisso.idComp}}</td>
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
@@ -47,9 +47,6 @@
                 <td>{{compromisso.plataforma}}</td>
                 <td>{{compromisso.usuario}}</td>
                 <!-- <td class="is-icon">
-                 <a href="#" @click.prevent="obsCompr(compromisso)">
-                    <i class="fa fa-eye"></i>
-                  </a>
                   <a href="#" @click.prevent="editarCompromisso(compromisso)">
                     <i class="fa fa-edit"></i>
                   </a>
@@ -83,6 +80,10 @@
               <label class="label">Data</label>
               <p v-text="currentTime"></p>
             </div>
+            <div class="column">
+              <label class="label">Hora</label>
+              <p v-text="currentHour"></p>
+            </div>
               
             <div class="column">
               <label class="label">Tipo</label>
@@ -92,7 +93,7 @@
                         {{ tipo.nome }}
                       </option>
                   </select>
-                  <span>Selecionado: {{ comp.idCompTipo }}</span>
+                  
               </div>
             </div>
               
@@ -104,7 +105,7 @@
                         {{ stat.nome }}
                       </option>
                   </select>
-                  <span>Selecionado: {{ comp.idStatus }}</span>
+                  
               </div>
             </div>
               
@@ -113,22 +114,22 @@
           <div class="columns">
           <div class="column">
           <label class="label">Título</label>
-          <p class="control">
-            <input class="input" placeholder="Defina um nome para o projeto..." v-model="comp.titulo">
-          </p>
+            <p class="control">
+              <input class="input" placeholder="Defina um nome para o projeto..." v-model="comp.titulo">
+            </p>
           <br>
-              </div>
+          </div>
           <div class="column is-4">
           <label class="label">Projeto</label>
             <div class="select">
               <select v-model="comp.idProjeto">
-                  <option v-for="projeto in projetos" :value="projeto.value">
-                    {{ projeto.text }}
+                  <option v-for="projeto in projetos" :value="projeto.idProjeto">
+                    {{ projeto.nome }}
                   </option>
               </select>
             </div>
             <p></p>
-          <br>
+          
               
               </div>
             </div>
@@ -186,7 +187,10 @@
 </template>
 
 <script>
+  //plugin para requisições
   import axios from 'axios'
+  
+  //captura hora e data
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
@@ -194,6 +198,7 @@
   //produção:
   const ENDPOINT = 'http://192.168.0.200/helpdesk/'
   
+  // ao descomentar abaixo tem que comentar a const acima
   //debug:
   // const ENDPOINT = 'http://192.168.0.115:32688/'
 
@@ -210,13 +215,13 @@
         showModalNew: false,
         showModalForum: false,
         currentTime: moment().format('L'),
+        currentHour: moment().format('LT'),
         tipos: [],
         status: [],
         prioridades: [
           { text: 'BAIXA', value: 1 },
           { text: 'MÉDIA', value: 2 },
-          { text: 'ALTA', value: 3 },
-          { text: 'PRA ONTEM!', value: 4 }
+          { text: 'ALTA', value: 3 }
         ],
         plataformas: [
           { text: '', value: 0},
@@ -234,16 +239,17 @@
               
               "idCompTipo": '',
               "idStatus": '',
-              "idProjeto": 3,
+              "idProjeto": '',
               "titulo": '',
               "numPrioridade": '',
               "idUsuario": 4,
-              "compromissosDet": []
-                  
+              "compromissosDet": []          
         },
-        msg: ''
+        msg: '',
+        filtro: ''
       } 
     },
+    
     methods: {
       validar() {
         
@@ -287,8 +293,19 @@
       selectTipo(){
         axios.get(ENDPOINT + 'api/comp/obterCompTipo')
         .then(response => {
-          // JSON responses are automatically parsed.
+          
           this.tipos = response.data
+          console.log()
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
+      },
+      selectProjeto(){
+        axios.get(ENDPOINT + 'api/projetos/todos')
+        .then(response => {
+          
+          this.projetos = response.data
           console.log()
         })
         .catch(e => {
@@ -298,7 +315,7 @@
       selectStatus(){
         axios.get(ENDPOINT + 'api/comp/obterStatus')
         .then(response => {
-          // JSON responses are automatically parsed.
+          
           this.status = response.data
           console.log()
         })
@@ -385,14 +402,15 @@
        },
        salvarCompromisso(){
         // this.validar()
-           
-        var err = ''
         
-        det = {detalhes: this.msg}
+        det = {
+            detalhes: this.msg,
+            dataHoraAtend: new Date().toLocaleString()
+        }
         this.comp.compromissosDet.push(det)
         
         
-        if (this.selected.id!=null){  //EDITAR
+        /*if (this.selected.id!=null){  //EDITAR
           this.$http.put(ENDPOINT + `api/comp/obterComp/${this.selected.id}`,this.selected).then(
             response=>{
               this.$set('selected',{})
@@ -405,7 +423,7 @@
               this.loadCompromissos()
             )
           }
-          else { //NOVO
+          else {*/ //NOVO
            this.$http.post(ENDPOINT + 'api/comp/novoCab',this.comp)
              .then((response) => {
                 this.$set('comp',{})
@@ -414,7 +432,7 @@
                 console.log(response.body)
              })
              .catch((error) => {
-               swal({   title: `Falha ao enviar sua solicitação`,
+                swal({   title: `Falha ao enviar sua solicitação`,
                         html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
                         type: "error",  
                     })
@@ -426,23 +444,14 @@
                     '<i class="fa fa-thumbs-up"></i> Ok!',
                 }) */ 
                 console.log(error);
-             }).finally(function () {
-              this.loadCompromissos()
              })
-          }
+             .finally(function () {
+                this.loadCompromissos()
+             })
+          // <-- inserir uma chave aqui ao descomentar o if /*}*/
       },
-        
-      obsCompr(compromisso) {
-        swal({
-          title: 'Anotações sobre este compromisso',
-          type: 'info',
-          html: '<p style="font-size:20px">' + `${compromisso.obs}` + '</p>',
-          showCloseButton: true,
-          confirmButtonText:
-            '<i class="fa fa-thumbs-up"></i> Ok!',
-        })
-      },
-      carregarComp(compromisso) {
+      carregarComp(compromisso){
+        this.filtro = compromisso.idComp
       }
     },
     created(){
@@ -450,6 +459,7 @@
       t.loadCompromissos()
       t.selectTipo()
       t.selectStatus()
+      t.selectProjeto()
     },
   }
 </script>

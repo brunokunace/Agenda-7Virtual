@@ -6,7 +6,7 @@
     <div class="card" style="width: 100%;">
       <header class="card-header">
         <p class="card-header-title">
-          Compromisso
+          Compromisso: {{compromissos.idComp}}
         </p>
       </header>
       <div class="card-content">
@@ -18,17 +18,17 @@
               
             <div class="column">
               <label class="label">Data:</label>
-              <div v-show="compromissos.dataHora"></div>
+                {{compromissos.dataHora}}
             </div>
               
             <div class="column">
               <label class="label">Tipo:</label>
-              
+                {{compromissos.tipoComp}}
             </div>
               
             <div class="column is-4">
               <label class="label">Status:</label>
-              
+                {{compromissos.status}}
             </div>
               
           </div>
@@ -36,11 +36,11 @@
           <div class="columns">
             <div class="column">
               <label class="label">Título:</label>
-
+                {{compromissos.titulo}}
             </div>
             <div class="column is-4">
               <label class="label">Projeto:</label>
-
+                {{compromissos.projeto}}
             </div>
           </div>
             
@@ -48,15 +48,15 @@
           <div class="columns">
             <div class="column">
               <label class="label">Plataforma:</label>
-              
+                {{compromissos.plataforma}}
             </div>
             <div class="column">
               <label class="label">Prioridade:</label>
-              
+                {{compromissos.numPrioridade}}
             </div>
             <div class="column">
               <label class="label">Usuário:</label>
-              
+                {{compromissos.usuario}}
             </div> 
           </div>
           
@@ -64,48 +64,52 @@
           
         </section>
       </div>
-      <!--<footer class="card-footer">
-        <a href="#" class="card-footer-item">Save</a>
-        <a href="#" class="card-footer-item">Edit</a>
-        <a href="#" class="card-footer-item">Delete</a>
-      </footer>-->
+      
     </div>
       
     <br>
       
-    <h2>{{ title }}</h2>
-      <!-- detalhes -->
+    <h2>Tópico: {{ compromissos.titulo }}</h2>
+    <br>
       
-    <table class="table is-narrow is-bordered is-mobile">
-            <thead>
-                <th>Cód</th>
-                <th>Abertura</th>
-                <th>Data/Hora Atendimento</th>
-                <th>Usuário</th>
-                <th>Mensagem</th>
-                <th>Ações</th>
-                
-
-            </thead>
-            <tbody>
-              <tr v-for="compromisso in compromissosDet">
-                <td>{{compromisso.idComp}}</td>
-                <td>{{compromisso.dataHoraAgend}}</td>
-                <td>{{compromisso.dataHoraAtend}}</td>
-                <td>{{compromisso.idUsuario}}</td>
-                <td><strong>{{compromisso.detalhes}}</strong></td>
-                <td class="is-icon">
-                 <a href="#" @click.prevent="obsCompr(compromisso)">
-                    <i class="fa fa-eye"></i>
-                  </a>
-                  <a href="#" @click.prevent="editarCompromisso(compromisso)">
-                    <i class="fa fa-plus"></i>
-                  </a>
-                 <br> 
-                </td>
-              </tr>
-            </tbody>
-      </table>
+      <!-- detalhes -->
+    <div v-for="compromisso in compromissosDet">
+    
+        <div class="box">
+            <strong>cód:</strong>
+            <strong>{{compromisso.idCompDet}}</strong> 
+            <hr style="margin-top: 0;">
+            <div class="columns">
+                <div class="column">
+                <label class="label">Mensagem:</label>
+                {{compromisso.detalhes}}
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <strong>Data/Hora de Abertura:</strong>
+                    <div>{{compromisso.dataHoraAgend}}</div>
+               
+                </div>    
+                <div class="column">
+                    <strong>Data/Hora de Atendimento:</strong>
+                    <div>{{compromisso.dataHoraAtend}}</div>
+               
+                </div>
+            </div>    
+            
+            
+            <a class="button is-primary" @click="showResposta" >Responder</a>
+            <br><br>
+            <div  v-if="visivel">
+                <textarea placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                <a class="button is-primary">Enviar</a>
+            </div>
+        </div>
+        
+        
+             
+   </div>                
  </div>   
 </template>
 
@@ -137,26 +141,20 @@ export default {
         showModalForum: false,
         tipos: [],
         status: [],
-        prioridades: [
-          { text: 'BAIXA', value: 1 },
-          { text: 'MÉDIA', value: 2 },
-          { text: 'ALTA', value: 3 },
-          { text: 'PRA ONTEM!', value: 4 }
-        ],
-        plataformas: [
-          { text: 'DESKTOP', value: 1},
-          { text: 'WEB', value: 2 },
-          { text: 'MOBILE', value: 3 }
-        ],
-        usuarios: [
-          { text: 'KEL', value: 4}
-        ],
-        projetos: [
-          { text: 'PROJETO INICIAL', value: 3 }
-        ],
+        visivel: false
       }
     },
+    props: [ "filtro" ],
     methods: {
+      showResposta(){
+        if(this.visivel==true){
+            this.visivel=false
+        }
+        else {
+            this.visivel=true;
+        }
+        
+      },
       showLoading(){
         this.isLoading=true;
       },
@@ -168,13 +166,13 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = 13;
+        let qString = 479;
 
         if (this.search){
           qString = `&q=${this.search}`
         }
 
-        this.$http.get(ENDPOINT + `api/comp/obterComp?idComp=${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterCompCab?idComp=${qString}`).then(
          response=>{
            t.compromissos = response.json()
          },
@@ -190,13 +188,13 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = 450;
+        let qString = 479;
 
         if (this.search){
           qString = `&q=${this.search}`
         }
-
-        this.$http.get(ENDPOINT + `api/comp/obterCompDet?idComp=${qString}`).then(
+        
+        this.$http.get(ENDPOINT + `api/comp/obterCompdet?idComp=${qString}`).then(
          response=>{
            t.compromissosDet = response.json()
          },
@@ -207,16 +205,6 @@ export default {
         })
 
        
-       },
-       obsCompr(compromisso) {
-            swal({
-              title: 'Mensagens',
-              type: 'info',
-              html: '<p style="font-size:20px">' + `${compromisso.detalhes}` + '</p>',
-              showCloseButton: true,
-              confirmButtonText:
-                '<i class="fa fa-thumbs-up"></i> Ok!',
-            })
        },
     },
     created(){

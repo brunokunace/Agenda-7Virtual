@@ -5,8 +5,6 @@ import Compromissos from './content/Compromissos.vue'
 import Detalhes from './content/Detalhes.vue'
 import Testes from './content/Test.vue'
 
-
-
 const RouterConfig = {
     '/': {
         component: MainContent
