@@ -37,7 +37,7 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/cdetalhe' }"> <!-- @click.prevent="carregarComp(compromisso)" -->
+                <td v-link="{ path: '/cdetalhe', props: carregarComp(compromisso) }" @click="carregarComp(compromisso)">
                     {{compromisso.idComp}}</td>
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
@@ -170,7 +170,7 @@
           <label class="label">Detalhe</label>
           
           <p class="control">
-            <textarea class="textarea" placeholder="escreva o comentário..." v-model="msg"></textarea>
+            <textarea class="textarea" placeholder="escreva o comentário..." v-model.trim="msg"></textarea>
           </p>
           
           <br>
@@ -232,9 +232,7 @@
         usuarios: [
           { text: 'KEL', value: 4}
         ],
-        projetos: [
-          { text: 'PDV PC', value: 3 }
-        ],
+        projetos: [],
         comp: {
               
               "idCompTipo": '',
@@ -403,11 +401,7 @@
        salvarCompromisso(){
         // this.validar()
         
-        det = {
-            detalhes: this.msg,
-            dataHoraAtend: new Date().toLocaleString()
-        }
-        this.comp.compromissosDet.push(det)
+        
         
         
         /*if (this.selected.id!=null){  //EDITAR

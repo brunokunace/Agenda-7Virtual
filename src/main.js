@@ -7,8 +7,6 @@ import VueResource from 'vue-resource'
 import VeeValidate from 'vee-validate'
 import money from 'v-money'
 import axios from 'axios'
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -20,7 +18,7 @@ const config = {
   errorBagName: 'errors', // change if property conflicts.
   fieldsBagName: 'fields', 
   delay: 0, 
-  // locale: 'en', 
+  locale: 'en', 
   dictionary: null, 
   strict: true, 
   classes: false, 

@@ -102,8 +102,21 @@
             <a class="button is-primary" @click="showResposta" >Responder</a>
             <br><br>
             <div  v-if="visivel">
-                <textarea placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
-                <a class="button is-primary">Enviar</a>
+                <textarea v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                
+                <div class="columns">
+                    <div class="column">
+                        <a class="button is-primary" @click.prevent="salvarDet()">Enviar</a>
+                    </div>    
+                    <div class="column">
+                        <strong>Data:</strong>{{ currentTime }}
+                    </div>
+                    
+                    <div class="column">
+                        <strong>Hora:</strong>{{ currentHour }}
+                    </div>
+                    
+                </div>   
             </div>
         </div>
         
@@ -132,19 +145,28 @@ export default {
       return {
         isLoading: false,
         title: 'Tópicos',
-        search: '',
+        currentTime: moment().format('L'),
+        currentHour: moment().format('LT'),
         compromissos: [],
         compromissosDet: [],
-        selected: {},
-        itensPerPage: 10,
         showModalNew: false,
         showModalForum: false,
-        tipos: [],
-        status: [],
-        visivel: false
+        visivel: false,
+        msg: '',
+        q: 482,
+        
+        compDet: {
+            "detalhes": "jsdkfhsk",
+            "idComp": 482,
+            "idUsuario": 4,
+            "idStatus": 1,
+            
+        },
+        
       }
     },
     props: [ "filtro" ],
+    
     methods: {
       showResposta(){
         if(this.visivel==true){
@@ -166,13 +188,9 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = 479;
+        let q = 482;
 
-        if (this.search){
-          qString = `&q=${this.search}`
-        }
-
-        this.$http.get(ENDPOINT + `api/comp/obterCompCab?idComp=${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterCompCab?idComp=${q}`).then(
          response=>{
            t.compromissos = response.json()
          },
@@ -188,13 +206,9 @@ export default {
         let t = this
         this.showLoading()
 
-        let qString = 479;
-
-        if (this.search){
-          qString = `&q=${this.search}`
-        }
+        let q = 482;
         
-        this.$http.get(ENDPOINT + `api/comp/obterCompdet?idComp=${qString}`).then(
+        this.$http.get(ENDPOINT + `api/comp/obterCompdet?idComp=${q}`).then(
          response=>{
            t.compromissosDet = response.json()
          },
@@ -203,9 +217,35 @@ export default {
          }).finally(function () {
           t.hideLoading();
         })
-
+      },
+      salvarDet(){
+          
+             this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
+             .then((response) => {
+                this.$set('compDet',{})
+                this.showResposta()
+                console.log(response.body)
+             })
+             .catch((error) => {
+                swal({   title: `Falha ao enviar sua solicitação`,
+                        html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
+                        type: "error",  
+                    })
+                //=>CAPTURAR O RETORNO DO SERVIDOR NA MENSAGEM
+                /*this.err = JSON.stringify(error)
+                swal({
+                  html: '<strong>' + this.err + '</strong>',
+                  confirmButtonText:
+                    '<i class="fa fa-thumbs-up"></i> Ok!',
+                }) */ 
+                console.log(error);
+             })
+             .finally(function () {
+                this.loadDetahes()
+             })  
+      
+      }
        
-       },
     },
     created(){
       let t = this
