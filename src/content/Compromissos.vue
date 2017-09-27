@@ -37,7 +37,7 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/cdetalhe', props: carregarComp(compromisso) }" @click="carregarComp(compromisso)">
+                <td v-link="{ path: '/ccompromissos' }" @click="filtro = compromisso.idComp" >
                     {{compromisso.idComp}}</td>
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
@@ -401,7 +401,8 @@
        salvarCompromisso(){
         // this.validar()
         
-        
+        det = {detalhes: this.msg}
+        this.comp.compromissosDet.push(det)
         
         
         /*if (this.selected.id!=null){  //EDITAR
@@ -420,7 +421,15 @@
           else {*/ //NOVO
            this.$http.post(ENDPOINT + 'api/comp/novoCab',this.comp)
              .then((response) => {
-                this.$set('comp',{})
+                this.$set('comp',{
+                  "idCompTipo": '',
+                  "idStatus": '',
+                  "idProjeto": '',
+                  "titulo": '',
+                  "numPrioridade": '',
+                  "idUsuario": '',
+                  "compromissosDet": []
+                })
                 this.$set('msg','')
                 this.$set('showModalNew',false)
                 console.log(response.body)

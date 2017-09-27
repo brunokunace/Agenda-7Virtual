@@ -10,12 +10,12 @@
     "build": "cross-env NODE_ENV=production browserify src/main.js | uglifyjs -c warnings=false -m > dist/build.js"
   },
   "dependencies": {
-    
     "axios": "^0.16.2",
     "bulma": "^0.1.0",
     "moment": "^2.18.1",
     "sweetalert": "^2.0.3",
     "vue": "^1.0.0",
+    "vue-datepicker": "^1.3.0",
     "vue-resource": "^0.9.3",
     "vue-router": "^0.7.13",
     "vuex": "^1.0.0-rc"
