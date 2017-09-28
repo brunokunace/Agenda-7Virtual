@@ -17,7 +17,7 @@
           <div class="columns">
               
             <div class="column">
-              <label class="label">Data:</label>
+              <label class="label">Data/Hora:</label>
                 {{compromissos.dataHora}}
             </div>
               
@@ -159,6 +159,7 @@ export default {
     name: 'CompromissosDet',
     data () {
       return {
+        q: '',
         isLoading: false,
         title: 'Tópicos',
         compromissos: [],
@@ -172,8 +173,8 @@ export default {
             "idComp": 489,
             "idUsuario": 4,
             "idStatus": 1,
-            "dataHoraAgend": ''
-            
+            "dataHoraAgend": '',
+            "nivel": 1,
         },
         status: [],  
         usuarios: [
@@ -242,11 +243,14 @@ export default {
     components: {
     'date-picker': myDatepicker
     },
-    props: [ "filtro" ],  
     
      // METODOS ======================================
     
     methods: {
+      queryString() {
+        this.q = JSON.stringify(this.$route.query)
+      },
+        
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
           swal(
@@ -340,10 +344,11 @@ export default {
              .then((response) => {
                 this.$set('compDet',{
                     "detalhes": '',
-                    "idComp": 488,
+                    "idComp": 489,
                     "idUsuario": 4,
                     "idStatus": 1,
-                    "dataHoraAgend": "2017-09-27T17:20:12"
+                    "nivel": 1,
+                    "dataHoraAgend": ''
                 })
                 this.showResposta()
                 console.log(response.body)
@@ -374,6 +379,7 @@ export default {
       t.loadCompromissos()
       t.loadDetahes()
       t.selectStatus()
+      t.queryString()
     }
 }
 </script>

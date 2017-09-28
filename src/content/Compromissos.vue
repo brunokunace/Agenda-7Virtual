@@ -38,7 +38,7 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/cdetalhe' }" @click="filtro = compromisso.idComp" >
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: '489'}">
                     {{compromisso.idComp}}</td>
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
@@ -249,14 +249,7 @@
     },
     
     methods: {
-      getQueryDefault () {
-        return this.$route.stringifyPath({ 
-          name: 'search', 
-          query: { 
-            q: 'best' 
-          }      
-        })
-      },
+      
       validar() {
         
         if (this.selected.idCompTipo==null || this.selected.idCompTipo=='') {
