@@ -13,6 +13,7 @@ const RouterConfig = {
         component: Compromissos
     },
     '/cdetalhe': {
+        name: 'detalhes',
         component: Detalhes 
     }/*,
     '/testes': {

@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <span class="nav-item">
-            <a v-link="{ path: '/' }" class="button is-dark">
+            <a v-link="{ path: '/' }" class="button is-primary">
                 <span class="icon">
                 <i class="fa fa-home"></i>
                 </span>

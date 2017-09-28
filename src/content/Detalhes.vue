@@ -1,6 +1,6 @@
 ﻿<template>
   <i class="fixo fa fa-spinner fa-pulse fa-5x fa-fw" v-show="isLoading"></i>
-  <span class="fixo sr-only" v-show="isLoading">Carregando...</span>
+    <span class="fixo sr-only" v-show="isLoading">Carregando...</span>
   <div class="container">
       <!-- cabeçario -->
     <div class="card" style="width: 100%;">
@@ -75,7 +75,7 @@
      <!-- responder --> 
       
     <div class="box">
-        <a class="button is-primary" @click="showResposta" >Novo Detalhe</a>
+        <a class="button is-primary" @click="showResposta">Novo Detalhe</a>
             <div  v-if="visivel">
                 <br>
                 <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
@@ -159,7 +159,7 @@ export default {
     name: 'CompromissosDet',
     data () {
       return {
-        q: '',
+        
         isLoading: false,
         title: 'Tópicos',
         compromissos: [],
@@ -170,7 +170,7 @@ export default {
         msg: '',
         compDet: {
             "detalhes": '',
-            "idComp": 489,
+            "idComp": this.$route.query.q,
             "idUsuario": 4,
             "idStatus": 1,
             "dataHoraAgend": '',
@@ -241,7 +241,7 @@ export default {
         }
     },
     components: {
-    'date-picker': myDatepicker
+        'date-picker': myDatepicker
     },
     
      // METODOS ======================================
@@ -336,15 +336,16 @@ export default {
           this.validar()
           
           let t = this
+          
           t.compDet.dataHoraAgend = t.startTime.time
-          t.compDet.idUsuario = t.usuarios.value
+          t.compDet.idUsuario = 4
           
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
                 this.$set('compDet',{
                     "detalhes": '',
-                    "idComp": 489,
+                    "idComp": this.$route.query.q,
                     "idUsuario": 4,
                     "idStatus": 1,
                     "nivel": 1,
@@ -353,11 +354,11 @@ export default {
                 this.showResposta()
                 console.log(response.body)
              })
-             .catch((response) => {
-                swal({   title: `Falha ao enviar sua solicitação`,
+             .catch((error) => {
+                /*swal({   title: `Falha ao enviar sua solicitação`,
                         html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
                         type: "error",  
-                    })
+                    })*/
                 //=>CAPTURAR O RETORNO DO SERVIDOR NA MENSAGEM
                 /*this.err = JSON.stringify(response.json)
                 swal({
@@ -379,7 +380,7 @@ export default {
       t.loadCompromissos()
       t.loadDetahes()
       t.selectStatus()
-      t.queryString()
+      
     }
 }
 </script>

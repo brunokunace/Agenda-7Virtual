@@ -38,8 +38,11 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: '489'}">
-                    {{compromisso.idComp}}</td>
+               
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">
+                    {{compromisso.idComp}}
+                </td>
+                
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
                 <td>{{compromisso.status}}</td>
@@ -207,6 +210,7 @@
     name: 'Compromissos',
     data () {
       return {
+        q: '489',
         isLoading: false,
         title: 'Compromissos',
         search: '',
