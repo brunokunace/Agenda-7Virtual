@@ -13,18 +13,7 @@
                 </span>
                 <span>Agenda</span>
             </a>
-            <a v-link="{ path: '/testes' }" class="button is-primary">
-                <span class="icon">
-                <i class="fa fa-bolt"></i>
-                </span>
-                <span>Test</span>
-            </a>
-            <a v-link="{ path: '/cdetalhes' }" class="button is-dark" disabled>
-                <span class="icon">
-                <i class="fa fa-barcode"></i>
-                </span>
-                <span>Content</span>
-            </a>
+            
         </span>
         
  

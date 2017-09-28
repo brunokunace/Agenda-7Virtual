@@ -6,15 +6,16 @@
   <div class="container">
     <h1 class="title">{{title}}</h1>
     <div class="columns">
+      <!-- CAMPO DE BUSCAR
       <div class="column is-5">
         <p class="control has-addons">
           <input class="input is-expanded" type="text" placeholder="O que você procura?" v-model="search" v-on:keyup.enter="searchCompromissos">
           <a class="button is-info" @click.prevent="searchCompromissos"><i class="fa fa-search"></i></a>
         </p>
-      </div>
+      </div> -->
       
       <div class="column is-1">
-        <a class="button is-info" @click.prevent="newCompromissos">Novo</a>
+        <a class="button is-info" @click.prevent="newCompromissos">Novo Compromisso</a>
       </div>
 
 
@@ -37,7 +38,7 @@
             </thead>
             <tbody>
               <tr v-for="compromisso in compromissos">
-                <td v-link="{ path: '/ccompromissos' }" @click="filtro = compromisso.idComp" >
+                <td v-link="{ path: '/cdetalhe' }" @click="filtro = compromisso.idComp" >
                     {{compromisso.idComp}}</td>
                 <td>{{compromisso.titulo}}</td>
                 <td>{{compromisso.tipoComp}}</td>
@@ -211,7 +212,6 @@
         search: '',
         compromissos: [],
         selected: {},
-        itensPerPage: 10,
         showModalNew: false,
         showModalForum: false,
         currentTime: moment().format('L'),
@@ -249,6 +249,14 @@
     },
     
     methods: {
+      getQueryDefault () {
+        return this.$route.stringifyPath({ 
+          name: 'search', 
+          query: { 
+            q: 'best' 
+          }      
+        })
+      },
       validar() {
         
         if (this.selected.idCompTipo==null || this.selected.idCompTipo=='') {

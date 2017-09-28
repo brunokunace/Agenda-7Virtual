@@ -75,26 +75,34 @@
      <!-- responder --> 
       
     <div class="box">
-        <a class="button is-primary" @click="showResposta" >Responder</a>
-            <br><br>
+        <a class="button is-primary" @click="showResposta" >Novo Detalhe</a>
             <div  v-if="visivel">
-                <textarea v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
-                
+                <br>
+                <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                <br>
                 <div class="columns">
+                        
                     <div class="column">
-                        <a class="button is-primary" @click.prevent="salvarDet()">Enviar</a>
-                    </div>    
-                    <div class="column">
-                        <strong>Data:</strong>
-                        <div>
+                        <label class="label">Data:</label>
+                        <div class="select">
                           <date-picker :date="startTime" :option="option" :limit="limit"></date-picker>
                         </div>
+                        <!-- <span>{{ startTime.time }}</span> -->
                     </div>
-                    <!--
                     <div class="column">
-                        <strong>Hora:</strong>{{ currentHour }}
+                    <label class="label">Status</label>
+                      <div class="select">
+                          <select v-model="compDet.idStatus">
+                              <option v-for="stat in status" :value="stat.idStatus">
+                                {{ stat.nome }}
+                              </option>
+                          </select>
+                      </div>
+                      <!-- <span>{{ compDet.idStatus }}</span> -->
                     </div>
-                    -->
+                    <div class="column is-2">    
+                        <a class="button is-primary enviar" @click.prevent="salvarDet()">Enviar</a>
+                    </div>
                 </div>   
             </div>  
     </div>
@@ -116,18 +124,13 @@
                 <div class="column">
                     <strong>Data/Hora de Abertura:</strong>
                     <div>{{compromisso.dataHoraAgend}}</div>
-               
                 </div>    
                 <div class="column">
                     <strong>Data/Hora de Atendimento:</strong>
                     <div>{{compromisso.dataHoraAtend}}</div>
-               
                 </div>
             </div>    
-            
-            
-            
-        </div>
+          </div><br>
         
         
              
@@ -140,10 +143,12 @@
 import axios from 'axios'
 import myDatepicker from 'vue-datepicker'
     
-//produção
-const ENDPOINT = 'http://192.168.0.200/helpdesk/'
-//debug
-// const ENDPOINT = 'http://192.168.0.115:32688/'
+  //produção:
+  const ENDPOINT = 'http://192.168.0.200/helpdesk/'
+  
+  // ao descomentar abaixo tem que comentar a const acima
+  //debug:
+  // const ENDPOINT = 'http://192.168.0.115:32688/'
 
   var moment = require('moment');
   require("moment/min/locales.min");
@@ -156,8 +161,6 @@ export default {
       return {
         isLoading: false,
         title: 'Tópicos',
-        currentTime: moment().format('L'),
-        currentHour: moment().format('LT'),
         compromissos: [],
         compromissosDet: [],
         showModalNew: false,
@@ -165,13 +168,17 @@ export default {
         visivel: false,
         msg: '',
         compDet: {
-            "detalhes": "teste 4",
-            "idComp": 487,
+            "detalhes": '',
+            "idComp": 489,
             "idUsuario": 4,
             "idStatus": 1,
-            "dataHoraAgend": "2017-09-27T17:20:12.513"
+            "dataHoraAgend": ''
             
         },
+        status: [],  
+        usuarios: [
+          { text: 'KEL', value: 4}
+        ],
           // datapicker
         startTime: {
             time: ''
@@ -184,12 +191,12 @@ export default {
             type: 'day',
             week: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
             month: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-            format: 'YYYY-MM-DD',
+            format: 'YYYY-MM-DD' + moment().format('THH:mm'),
             placeholder: 'Insira a data',
             inputStyle: {
               'display': 'inline-block',
               'padding': '6px',
-              'line-height': '22px',
+              'line-height': '18px',
               'font-size': '16px',
               'border': '2px solid #fff',
               'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.2)',
@@ -206,37 +213,71 @@ export default {
         },
         overlayOpacity: 0.5, // 0.5 as default
         dismissible: true // as true as default
-      },
-      timeoption: {
-        type: 'min',
-        week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-        month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        format: 'YYYY-MM-DD HH:mm'
-      },
-      multiOption: {
-        type: 'multi-day',
-        week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-        month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        format:"YYYY-MM-DD HH:mm"
-      },
-      limit: [{
-        type: 'weekday',
-        available: [1, 2, 3, 4, 5]
         },
-        {
-        type: 'fromto',
-        from: '2016-02-01',
-        to: '2016-02-20'
+        timeoption: {
+          type: 'time',
+          week: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+          month: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+          format: 'YYYY-MM-DDTHH:mm'
+        },
+        multiOption: {
+          type: 'multi-day',
+          week: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+          month: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+          format: 'YYYY-MM-DDTHH:mm'
+        },
+        limit: [{
+          type: '', // preencher com 'weekday' para impor limite no calendário e ocultar dom/sab
+          available: [1, 2, 3, 4, 5, 6] //define o limite de dias uteis - [6] inclui o sábado no calendário  
+        },
+        { // sem uso no momento
+          type: 'fromto',
+          from: '',
+          to: ''
         }
       ]
-    
+
         }
     },
     components: {
     'date-picker': myDatepicker
     },
-    props: [ "filtro" ],    
+    props: [ "filtro" ],  
+    
+     // METODOS ======================================
+    
     methods: {
+      validar() {
+        if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
+          swal(
+            'Oopa...',
+            'Por favor, escreva  a ocorrência',
+            'error'
+          )
+          this.selected.idCompTipo.focus();
+          return false
+        }
+        if (this.startTime.time==null || this.startTime.time=='') {
+          swal(
+            'Oopa...',
+            'Por favor, preencha a data e hora!',
+            'error'
+          )
+          this.selected.idCompTipo.focus();
+          return false
+        }
+      },
+      selectStatus(){
+        axios.get(ENDPOINT + 'api/comp/obterStatus')
+        .then(response => {
+          
+          this.status = response.data
+          console.log()
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
+      },
       showResposta(){
         if(this.visivel==true){
             this.visivel=false
@@ -257,7 +298,7 @@ export default {
         let t = this
         this.showLoading()
 
-        let q = 487;
+        let q = t.compDet.idComp;
 
         this.$http.get(ENDPOINT + `api/comp/obterCompCab?idComp=${q}`).then(
          response=>{
@@ -275,7 +316,7 @@ export default {
         let t = this
         this.showLoading()
 
-        let q = 487;
+        let q = t.compDet.idComp;
         
         this.$http.get(ENDPOINT + `api/comp/obterCompdet?idComp=${q}`).then(
          response=>{
@@ -288,31 +329,37 @@ export default {
         })
       },
       salvarDet(){
+          this.validar()
+          
+          let t = this
+          t.compDet.dataHoraAgend = t.startTime.time
+          t.compDet.idUsuario = t.usuarios.value
+          
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
                 this.$set('compDet',{
                     "detalhes": '',
-                    "idComp": 487,
+                    "idComp": 488,
                     "idUsuario": 4,
                     "idStatus": 1,
-                    "dataHoraAgend": "2017-09-27T17:20:12.513"
+                    "dataHoraAgend": "2017-09-27T17:20:12"
                 })
                 this.showResposta()
                 console.log(response.body)
              })
-             .catch((error) => {
-                /*swal({   title: `Falha ao enviar sua solicitação`,
+             .catch((response) => {
+                swal({   title: `Falha ao enviar sua solicitação`,
                         html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
                         type: "error",  
-                    })*/
+                    })
                 //=>CAPTURAR O RETORNO DO SERVIDOR NA MENSAGEM
-                this.err = JSON.stringify(response.json)
+                /*this.err = JSON.stringify(response.json)
                 swal({
                   html: '<strong>' + this.err + '</strong>',
                   confirmButtonText:
                     '<i class="fa fa-thumbs-up"></i> Ok!',
-                }) 
+                }) */
                 console.log(response.json)
              })
              .finally(function () {
@@ -326,6 +373,7 @@ export default {
       let t = this
       t.loadCompromissos()
       t.loadDetahes()
+      t.selectStatus()
     }
 }
 </script>
@@ -333,5 +381,8 @@ export default {
 <style scoped>
     h2 {
         font-size: 35px;
+    }
+    .enviar {
+        margin-top: 25px;
     }
 </style>
