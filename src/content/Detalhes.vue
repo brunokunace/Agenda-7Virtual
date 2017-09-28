@@ -57,13 +57,19 @@
             <div class="column">
               <label class="label">Usuário:</label>
                 {{compromissos.usuario}}
-            </div> 
+            </div>  
           </div>
           
           <br>
           
         </section>
       </div>
+        
+      <footer class="card-footer">
+        <p class="card-footer-item">
+        <a href="#resposta" class="button is-primary">Responder</a>
+        </p>
+      </footer>
       
     </div>
       
@@ -74,10 +80,41 @@
       
      <!-- responder --> 
       
-    <div class="box">
-        <a class="button is-primary" @click="showResposta">Novo Detalhe</a>
-            <div  v-if="visivel">
-                <br>
+      <!-- detalhes -->
+    <div v-for="compromisso in compromissosDet">
+    
+        <div class="box">
+            <div class="columns">
+                <div class="column is-2">
+                    <strong>cód:</strong>
+                    <strong>{{compromisso.idCompDet}}</strong> 
+                    
+                </div>
+                <div class="column is-5">
+                    <strong>Data/Hora de Abertura:</strong>
+                    {{compromisso.dataHoraAgend}}
+                </div>    
+                <div class="column is-5">
+                    <strong>Data/Hora de Atendimento:</strong>
+                    {{compromisso.dataHoraAtend}}
+                </div>
+            </div>
+            
+            <hr style="margin-top: 5px;">
+            
+            <div class="columns">
+                <div class="column">
+                <label class="label">Mensagem:</label>
+                <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
+                </div>
+            </div>
+            <div class="columns">
+                
+            </div>  
+            
+            <a class="button is-primary" @click="showResposta">Novo Detalhe</a>
+            <span v-if="visivel">
+                <br><br>
                 <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
                 <br>
                 <div class="columns">
@@ -103,38 +140,40 @@
                     <div class="column is-2">    
                         <a class="button is-primary enviar" @click.prevent="salvarDet()">Enviar</a>
                     </div>
-                </div>   
-            </div>  
-    </div>
-      
-      <!-- detalhes -->
-    <div v-for="compromisso in compromissosDet">
+                </div>
+            </span>  
     
-        <div class="box">
-            <strong>cód:</strong>
-            <strong>{{compromisso.idCompDet}}</strong> 
-            <hr style="margin-top: 0;">
-            <div class="columns">
-                <div class="column">
-                <label class="label">Mensagem:</label>
-                {{compromisso.detalhes}}
+            
+          </div><br>          
+   </div>  
+      <div id="resposta" class="box">
+                <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                <br>
+                <div class="columns">
+                        
+                    <div class="column">
+                        <label class="label">Data:</label>
+                        <div class="select">
+                          <date-picker :date="startTime" :option="option" :limit="limit"></date-picker>
+                        </div>
+                        <!-- <span>{{ startTime.time }}</span> -->
+                    </div>
+                    <div class="column">
+                    <label class="label">Status</label>
+                      <div class="select">
+                          <select v-model="compDet.idStatus">
+                              <option v-for="stat in status" :value="stat.idStatus">
+                                {{ stat.nome }}
+                              </option>
+                          </select>
+                      </div>
+                      <!-- <span>{{ compDet.idStatus }}</span> -->
+                    </div>
+                    <div class="column is-2">    
+                        <a class="button is-primary enviar" @click.prevent="salvarDet()">Enviar</a>
+                    </div>
                 </div>
-            </div>
-            <div class="columns">
-                <div class="column">
-                    <strong>Data/Hora de Abertura:</strong>
-                    <div>{{compromisso.dataHoraAgend}}</div>
-                </div>    
-                <div class="column">
-                    <strong>Data/Hora de Atendimento:</strong>
-                    <div>{{compromisso.dataHoraAtend}}</div>
-                </div>
-            </div>    
-          </div><br>
-        
-        
-             
-   </div>                
+     </div> 
  </div>   
 </template>
 
@@ -247,9 +286,6 @@ export default {
      // METODOS ======================================
     
     methods: {
-      queryString() {
-        this.q = JSON.stringify(this.$route.query)
-      },
         
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
@@ -289,8 +325,8 @@ export default {
         else {
             this.visivel=true;
         }
-        
       },
+      
       showLoading(){
         this.isLoading=true;
       },

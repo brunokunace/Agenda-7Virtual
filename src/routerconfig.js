@@ -15,7 +15,7 @@ const RouterConfig = {
     '/cdetalhe': {
         name: 'detalhes',
         component: Detalhes 
-    }/*,
+    },/*,
     '/testes': {
         component: Testes
     }*/

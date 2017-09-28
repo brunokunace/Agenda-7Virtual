@@ -56,16 +56,4 @@ export default {
     h1 {
         font-size: 50px;
     }
-    footer {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 1rem;
-        background-color: lightslategray;
-        text-align: center;
-        z-index: 5;
-        width: 100%;
-        color: aliceblue;
-    }
 </style>
