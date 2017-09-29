@@ -60,19 +60,16 @@
             </div>  
           </div>
           
-          <br>
-          
         </section>
       </div>
         
       <footer class="card-footer">
         <p class="card-footer-item">
-        <a href="#resposta" class="button is-primary">Responder</a>
+        <a @click="responder" class="button is-primary">Responder</a>
         </p>
       </footer>
       
-    </div>
-      
+    </div> 
     <br>
       
     <h2>Tópico: {{ compromissos.titulo }}</h2>
@@ -80,9 +77,10 @@
       
      <!-- responder --> 
       
-      <!-- detalhes -->
+     <!-- detalhes -->
     <div v-for="compromisso in compromissosDet">
     
+        
         <div class="box">
             <div class="columns">
                 <div class="column is-2">
@@ -106,47 +104,108 @@
                 <div class="column">
                 <label class="label">Mensagem:</label>
                 <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
+                nivel:  {{compromisso.nivel}}
                 </div>
-            </div>
-            <div class="columns">
-                
             </div>  
             
-            <a class="button is-primary" @click="showResposta">Novo Detalhe</a>
-            <span v-if="visivel">
-                <br><br>
-                <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
-                <br>
-                <div class="columns">
-                        
-                    <div class="column">
-                        <label class="label">Data:</label>
-                        <div class="select">
-                          <date-picker :date="startTime" :option="option" :limit="limit"></date-picker>
+            <a class="button is-primary" @click.prevent="showResposta(compromisso.idCompDet)">Novo Detalhe</a>
+    
+        <!-- MODAL -->    
+
+        <div id="modal_compromisso" class="modal" :class="{'is-active':showModal}">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Resposta: {{ selected.idCompDet }}</p>
+              <button class="delete" @click.prevent="showModal=false"></button>
+            </header>
+            <section class="modal-card-body">
+
+                    <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                    <br>
+                    <div class="columns">
+
+                        <div class="column">
+                            <label class="label">Data:</label>
+                            <div class="select">
+                              <date-picker :date="startTime" :option="option" :limit="limit"></date-picker>
+                            </div>
+                            <!-- <span>{{ startTime.time }}</span> -->
                         </div>
-                        <!-- <span>{{ startTime.time }}</span> -->
+                        <div class="column">
+                            <label class="label">Arquivo:</label>   
+                            <div class="file has-name">
+                                <input class="file-input is- primary" type="file" name="resume">  
+                            </div>
+                        </div> 
+
                     </div>
-                    <div class="column">
-                    <label class="label">Status</label>
-                      <div class="select">
-                          <select v-model="compDet.idStatus">
-                              <option v-for="stat in status" :value="stat.idStatus">
-                                {{ stat.nome }}
-                              </option>
-                          </select>
+
+            </section>
+            <div class="box">
+              <div class="level">
+                  <div class="level-left">
+                      <div class="level-item">
+                      <a class="button is-primary" @click.prevent="salvarDet()">Enviar</a>
                       </div>
-                      <!-- <span>{{ compDet.idStatus }}</span> -->
+                  </div>
+                  <div class="level-left">
+                      <div class="level-item">
+                  <a class="button" @click.prevent="showModal=false">Cancelar</a>
                     </div>
-                    <div class="column is-2">    
-                        <a class="button is-primary enviar" @click.prevent="salvarDet()">Enviar</a>
+                  </div>
+              </div>
+           </div>
+          </div>
+        </div>
+        <!-- fim modal -->
+        </div>
+        
+        
+        <!-- sub-resposta -->
+        <template v-show="compromisso.nivel">
+            <div class="columns">
+                <div class="column is-3">
+                </div>
+                <div class="column">
+                    <div class="box" id="coment">
+                        <div class="columns">
+                            <div class="column is-2">
+                                <strong>cód:</strong>
+                                <strong>{{compromisso.idCompDet}}</strong> 
+
+                            </div>
+                            <div class="column is-5">
+                                <strong>Data/Hora de Abertura:</strong>
+                                {{compromisso.dataHoraAgend}}
+                            </div>    
+                            <div class="column is-5">
+                                <strong>Data/Hora de Atendimento:</strong>
+                                {{compromisso.dataHoraAtend}}
+                            </div>
+                        </div>
+
+                        <hr style="margin-top: 5px;">
+
+                        <div class="columns">
+                            <div class="column">
+                            <label class="label">Mensagem:</label>
+                            <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
+                            </div>
+                            nivel:  {{compromisso.nivel}}
+                        </div>
                     </div>
                 </div>
-            </span>  
-    
-            
-          </div><br>          
-   </div>  
+            </div>
+        
+        </template>
+        
+    </div>
+      
+      
+  <!-- RESPOSTA GERAL -->    
       <div id="resposta" class="box">
+          <label class="label">Resposta:</label>
                 <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
                 <br>
                 <div class="columns">
@@ -158,7 +217,14 @@
                         </div>
                         <!-- <span>{{ startTime.time }}</span> -->
                     </div>
-                    <div class="column">
+                    <div class="column is-7">
+                        <label class="label">Arquivo:</label>
+                        
+                        <div class="file has-name">
+                            <input class="file-input is- primary" type="file" name="resume">  
+                        </div>
+                    </div>
+                    <!-- <div class="column">
                     <label class="label">Status</label>
                       <div class="select">
                           <select v-model="compDet.idStatus">
@@ -167,9 +233,9 @@
                               </option>
                           </select>
                       </div>
-                      <!-- <span>{{ compDet.idStatus }}</span> -->
-                    </div>
-                    <div class="column is-2">    
+                      <!-- <span>{{ compDet.idStatus }}</span> --
+                    </div> -->
+                    <div class="column is-1">    
                         <a class="button is-primary enviar" @click.prevent="salvarDet()">Enviar</a>
                     </div>
                 </div>
@@ -198,9 +264,10 @@ export default {
     name: 'CompromissosDet',
     data () {
       return {
-        
+        title: 'Tópico',
+        showModal: false,
         isLoading: false,
-        title: 'Tópicos',
+        selected: {},
         compromissos: [],
         compromissosDet: [],
         showModalNew: false,
@@ -212,21 +279,25 @@ export default {
             "idComp": this.$route.query.q,
             "idUsuario": 4,
             "idStatus": 1,
-            "dataHoraAgend": '',
-            "nivel": 1,
+            "dataHoraAgend": ''
         },
         status: [],  
         usuarios: [
           { text: 'KEL', value: 4}
         ],
-          // datapicker
+        idResposta: '',
+        configs: {
+          orderBy: 'stargazers_count',
+          order: 'desc',
+        },
+        
+        // datapicker
         startTime: {
             time: ''
         },
         endtime: {
             time: ''
         },
-
         option: {
             type: 'day',
             week: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
@@ -286,7 +357,12 @@ export default {
      // METODOS ======================================
     
     methods: {
-        
+      responder(){
+        window.scrollBy(x,y)
+      },
+      ordenarDets(){
+        this.compromissosDet.sort(function(){return})
+      },
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
           swal(
@@ -319,14 +395,15 @@ export default {
         })
       },
       showResposta(){
-        if(this.visivel==true){
-            this.visivel=false
-        }
-        else {
-            this.visivel=true;
-        }
+        // this.selected = compromisso
+        this.showModal = true;
+        this.compDet.nivel = 2
       },
-      
+      /*showNivel(){
+        if( this.compromissosDet.nivel = 2 ){
+            this.visivel = true
+        }
+      },*/
       showLoading(){
         this.isLoading=true;
       },
@@ -375,7 +452,7 @@ export default {
           
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          
+          t.compDet.nivel = Math.max(t.compDet.nivel) + 1
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
@@ -384,10 +461,51 @@ export default {
                     "idComp": this.$route.query.q,
                     "idUsuario": 4,
                     "idStatus": 1,
-                    "nivel": 1,
+                    "nivel": this.compDet.nivel,
                     "dataHoraAgend": ''
                 })
-                this.showResposta()
+                this.$set('showModal',false)
+                console.log(response.body)
+             })
+             .catch((error) => {
+                /*swal({   title: `Falha ao enviar sua solicitação`,
+                        html: `<strong>É importante verificar se todos os campos estão preenchidos, caso contrário contate o admin</strong>`,   
+                        type: "error",  
+                    })*/
+                //=>CAPTURAR O RETORNO DO SERVIDOR NA MENSAGEM
+                /*this.err = JSON.stringify(response.json)
+                swal({
+                  html: '<strong>' + this.err + '</strong>',
+                  confirmButtonText:
+                    '<i class="fa fa-thumbs-up"></i> Ok!',
+                }) */
+                console.log(response.json)
+             })
+             .finally(function () {
+                this.loadDetahes()
+             })  
+      
+      },
+      salvarSubDet(){
+          this.validar()
+          
+          let t = this
+          
+          t.compDet.dataHoraAgend = t.startTime.time
+          t.compDet.idUsuario = 4
+          t.compDet.nivel = Math.max(t.compDet.nivel)
+          
+             this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
+             .then((response) => {
+                this.$set('compDet',{
+                    "detalhes": '',
+                    "idComp": this.$route.query.q,
+                    "idUsuario": 4,
+                    "idStatus": 1,
+                    "nivel": this.compDet.nivel,
+                    "dataHoraAgend": ''
+                })
+                this.$set('showModal',false)
                 console.log(response.body)
              })
              .catch((error) => {
@@ -416,7 +534,7 @@ export default {
       t.loadCompromissos()
       t.loadDetahes()
       t.selectStatus()
-      
+      // t.showNivel()
     }
 }
 </script>

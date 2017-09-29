@@ -42,14 +42,13 @@
                 <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">
                     {{compromisso.idComp}}
                 </td>
-                
-                <td>{{compromisso.titulo}}</td>
-                <td>{{compromisso.tipoComp}}</td>
-                <td>{{compromisso.status}}</td>
-                <td>{{compromisso.numPrioridade}}</td>
-                <td>{{compromisso.projeto}}</td>
-                <td>{{compromisso.plataforma}}</td>
-                <td>{{compromisso.usuario}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.titulo}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.tipoComp}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.status}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.numPrioridade}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.projeto}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.plataforma}}</td>
+                <td @click="filtro = compromisso.idComp" v-link="{ path: '/cdetalhe', query: {q:filtro}}">{{compromisso.usuario}}</td>
                 <!-- <td class="is-icon">
                   <a href="#" @click.prevent="editarCompromisso(compromisso)">
                     <i class="fa fa-edit"></i>

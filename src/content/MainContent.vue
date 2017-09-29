@@ -4,8 +4,7 @@
         <p v-text="today"></p>
         <p v-text="currentTime1"></p>
         <div class="clock" v-text="currentTime2"></div>
-    </center>
-    
+    </center>    
 </template>
 <script>
 var moment = require('moment');
