@@ -80,90 +80,55 @@
      <!-- detalhes -->
     <div v-for="compromisso in compromissosDet">
     
-        
-        <div class="box">
-            <div class="columns">
-                <div class="column is-2">
-                    <strong>cód:</strong>
-                    <strong>{{compromisso.idCompDet}}</strong> 
+        <!--<template v-if="compromisso.nivel.length==1">
+        <div class="columns">
+            <div class="column is-1">
+            </div>
+            <div class="column">
+                <div class="box">
+                    
+                    <div class="columns">
+                        <div class="column is-2">
+                            <strong>cód:</strong>
+                            <strong>{{compromisso.idCompDet}}</strong> 
+
+                        </div>
+                        <div class="column is-5">
+                            <strong>Data/Hora de Abertura:</strong>
+                            {{compromisso.dataHoraAgend}}
+                        </div>    
+                        <div class="column is-5">
+                            <strong>Data/Hora de Atendimento:</strong>
+                            {{compromisso.dataHoraAtend}}
+                        </div>
+                    </div>
+
+                    <hr style="margin-top: 5px;">
+
+                    <div class="columns">
+                        <div class="column">
+                        <label class="label">Mensagem:</label>
+                        <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
+                        nivel:  {{compromisso.nivel}}
+                        </div>
+                    </div>  
+
+                    <a class="button is-primary" @click.prevent="showResposta(compromisso.idCompDet)">Novo Detalhe</a>
+
                     
                 </div>
-                <div class="column is-5">
-                    <strong>Data/Hora de Abertura:</strong>
-                    {{compromisso.dataHoraAgend}}
-                </div>    
-                <div class="column is-5">
-                    <strong>Data/Hora de Atendimento:</strong>
-                    {{compromisso.dataHoraAtend}}
-                </div>
+                 fim box principal 
             </div>
-            
-            <hr style="margin-top: 5px;">
-            
-            <div class="columns">
-                <div class="column">
-                <label class="label">Mensagem:</label>
-                <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
-                nivel:  {{compromisso.nivel}}
-                </div>
-            </div>  
-            
-            <a class="button is-primary" @click.prevent="showResposta(compromisso.idCompDet)">Novo Detalhe</a>
-    
-        <!-- MODAL -->    
-
-        <div id="modal_compromisso" class="modal" :class="{'is-active':showModal}">
-          <div class="modal-background"></div>
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title">Resposta: {{ selected.idCompDet }}</p>
-              <button class="delete" @click.prevent="showModal=false"></button>
-            </header>
-            <section class="modal-card-body">
-
-                    <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
-                    <br>
-                    <div class="columns">
-
-                        <div class="column">
-                            <label class="label">Data:</label>
-                            <div class="select">
-                              <date-picker :date="startTime" :option="option" :limit="limit"></date-picker>
-                            </div>
-                            <!-- <span>{{ startTime.time }}</span> -->
-                        </div>
-                        <div class="column">
-                            <label class="label">Arquivo:</label>   
-                            <div class="file has-name">
-                                <input class="file-input is- primary" type="file" name="resume">  
-                            </div>
-                        </div> 
-
-                    </div>
-
-            </section>
-            <div class="box">
-              <div class="level">
-                  <div class="level-left">
-                      <div class="level-item">
-                      <a class="button is-primary" @click.prevent="salvarDet()">Enviar</a>
-                      </div>
-                  </div>
-                  <div class="level-left">
-                      <div class="level-item">
-                  <a class="button" @click.prevent="showModal=false">Cancelar</a>
-                    </div>
-                  </div>
-              </div>
-           </div>
-          </div>
+            <div class="column is-1">
+            </div>
         </div>
-        <!-- fim modal -->
-        </div>
+        </template>-->
         
         
-        <!-- sub-resposta -->
-        <template v-show="compromisso.nivel">
+        <!-- sub-resposta par -->
+        
+        <template v-if="compromisso.nivel%2==0">
+            
             <div class="columns">
                 <div class="column is-3">
                 </div>
@@ -194,7 +159,52 @@
                             </div>
                             nivel:  {{compromisso.nivel}}
                         </div>
+                        <div class="columns">
+                            <!--<a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>-->
+                        </div>
                     </div>
+                </div>
+            </div>
+            
+            
+        </template>
+        
+        <!-- sub-resposta impar -->
+        <template v-else="compromisso.nivel%2==1">
+            <div class="columns">
+                <div class="column">
+                    <div class="box" id="coment">
+                        <div class="columns">
+                            <div class="column is-2">
+                                <strong>cód:</strong>
+                                <strong>{{compromisso.idCompDet}}</strong> 
+
+                            </div>
+                            <div class="column is-5">
+                                <strong>Data/Hora de Abertura:</strong>
+                                {{compromisso.dataHoraAgend}}
+                            </div>    
+                            <div class="column is-5">
+                                <strong>Data/Hora de Atendimento:</strong>
+                                {{compromisso.dataHoraAtend}}
+                            </div>
+                        </div>
+
+                        <hr style="margin-top: 5px;">
+
+                        <div class="columns">
+                            <div class="column">
+                            <label class="label">Mensagem:</label>
+                            <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
+                            </div>
+                            nivel:  {{compromisso.nivel}}
+                        </div>
+                        <div class="columns">
+                            <!--<a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
                 </div>
             </div>
         
@@ -202,11 +212,60 @@
         
     </div>
       
+    <!-- MODAL -->    
+
+    <div id="modal_compromisso" class="modal" :class="{'is-active':showModal}">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Resposta: {{ compromissos.nivel }}</p>
+          <button class="delete" @click.prevent="showModal=false"></button>
+        </header>
+        <section class="modal-card-body">
+
+                <textarea id="detalhes" class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                <br>
+                <div class="columns">
+
+                    <div class="column">
+                        <label class="label">Data:</label>
+                        <div class="select">
+                          <date-picker :date="startTime" :option="option" :limit="limit" id="data"></date-picker>
+                        </div>
+                        <!-- <span>{{ startTime.time }}</span> -->
+                    </div>
+                    <div class="column">
+                        <label class="label">Arquivo:</label>   
+                        <div class="file has-name">
+                            <input class="file-input is- primary" type="file" name="resume">  
+                        </div>
+                    </div> 
+
+                </div>
+
+        </section>
+        <div class="box">
+          <div class="level">
+              <div class="level-left">
+                  <div class="level-item">
+                  <a class="button is-primary" @click.prevent="salvarSubDet()">Enviar</a>
+                  </div>
+              </div>
+              <div class="level-left">
+                  <div class="level-item">
+              <a class="button" @click.prevent="showModal=false">Cancelar</a>
+                </div>
+              </div>
+          </div>
+       </div>
+      </div>
+    </div>
+    <!-- fim modal -->
       
-  <!-- RESPOSTA GERAL -->    
-      <div id="resposta" class="box">
+    <!-- RESPOSTA GERAL -->    
+      <div id="resposta" class="box" style="margin-top: 20px;">
           <label class="label">Resposta:</label>
-                <textarea class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
+                <textarea @click="responder()" class="textarea" v-model.trim="compDet.detalhes" placeholder="Digite a sua resposta" style="width: 100%;"></textarea>
                 <br>
                 <div class="columns">
                         
@@ -279,18 +338,15 @@ export default {
             "idComp": this.$route.query.q,
             "idUsuario": 4,
             "idStatus": 1,
-            "dataHoraAgend": ''
+            "dataHoraAgend": '',
+            "nivel": 1 
         },
         status: [],  
         usuarios: [
           { text: 'KEL', value: 4}
         ],
         idResposta: '',
-        configs: {
-          orderBy: 'stargazers_count',
-          order: 'desc',
-        },
-        
+                
         // datapicker
         startTime: {
             time: ''
@@ -354,11 +410,17 @@ export default {
         'date-picker': myDatepicker
     },
     
-     // METODOS ======================================
+    // METODOS ======================================
     
     methods: {
+      contar(nivel){
+        this.compromissosDet.nivel.length(nivel)
+      },
       responder(){
+        let x = 0
+        let y = 999999
         window.scrollBy(x,y)
+        
       },
       ordenarDets(){
         this.compromissosDet.sort(function(){return})
@@ -370,7 +432,7 @@ export default {
             'Por favor, escreva  a ocorrência',
             'error'
           )
-          this.selected.idCompTipo.focus();
+          this.detalhes.focus();
           return false
         }
         if (this.startTime.time==null || this.startTime.time=='') {
@@ -379,7 +441,7 @@ export default {
             'Por favor, preencha a data e hora!',
             'error'
           )
-          this.selected.idCompTipo.focus();
+          this.data.focus();
           return false
         }
       },
@@ -395,15 +457,8 @@ export default {
         })
       },
       showResposta(){
-        // this.selected = compromisso
         this.showModal = true;
-        this.compDet.nivel = 2
       },
-      /*showNivel(){
-        if( this.compromissosDet.nivel = 2 ){
-            this.visivel = true
-        }
-      },*/
       showLoading(){
         this.isLoading=true;
       },
@@ -452,7 +507,7 @@ export default {
           
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          t.compDet.nivel = Math.max(t.compDet.nivel) + 1
+          this.compDet.nivel = this.compDet.nivel + 1
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
@@ -493,7 +548,7 @@ export default {
           
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          t.compDet.nivel = Math.max(t.compDet.nivel)
+          
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
@@ -534,7 +589,6 @@ export default {
       t.loadCompromissos()
       t.loadDetahes()
       t.selectStatus()
-      // t.showNivel()
     }
 }
 </script>
