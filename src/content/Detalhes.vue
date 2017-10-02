@@ -159,7 +159,7 @@
                             </div>
                             nivel:  {{compromisso.nivel}}
                         </div>
-                        <div v-if="visivel" class="columns">
+                        <div v-if="visivel" class="subResp" id="subResp">
                             <a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>
                         </div>
                     </div>
@@ -199,7 +199,7 @@
                             </div>
                             nivel:  {{compromisso.nivel}}
                         </div>
-                        <div v-if="visivel" class="columns">
+                        <div v-if="visivel" class="subResp" id="subResp">
                             <a class="button is-primary" @click.prevent="showResposta(compromisso)">Novo Detalhe</a>
                         </div>
                     </div>
@@ -329,7 +329,7 @@ export default {
         selected: {},
         compromissos: [],
         compromissosDet: [],
-        visivel: true,
+        visivel: false,
         msg: '',
         compDet: {
             "detalhes": '',
@@ -337,7 +337,7 @@ export default {
             "idUsuario": 4,
             "idStatus": 1,
             "dataHoraAgend": '',
-            "nivel": 0
+            "nivel": 1
         },
         status: [],  
         usuarios: [
@@ -345,6 +345,7 @@ export default {
         ],
         idResposta: '',
         ultimoDet: '',
+        matches: '',
           
         // datapicker
         startTime: {
@@ -420,8 +421,7 @@ export default {
         this.ultimoDet = this.compromissosDet.slice(-1)[0]
         
       },
-      btnSubDets(element, index, array){
-        
+      btnSubDets(){
       },
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
@@ -504,12 +504,9 @@ export default {
           let t = this
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          if(t.compDet.nivel==0){
-             t.compDet.nivel = 1
-          }
-          else {t.compDet.nivel = t.ultimoDet.nivel
+          t.compromissosDet.nivel = t.ultimoDet.nivel
           t.compDet.nivel++
-          }
+          
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
@@ -589,6 +586,7 @@ export default {
       t.loadCompromissos()
       t.loadDetahes()
       t.selectStatus()
+      t.btnSubDets()
     }
 }
 </script>
