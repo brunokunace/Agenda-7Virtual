@@ -159,8 +159,8 @@
                             </div>
                             nivel:  {{compromisso.nivel}}
                         </div>
-                        <div class="columns">
-                            <!--<a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>-->
+                        <div v-if="visivel" class="columns">
+                            <a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>
                         </div>
                     </div>
                 </div>
@@ -199,8 +199,8 @@
                             </div>
                             nivel:  {{compromisso.nivel}}
                         </div>
-                        <div class="columns">
-                            <!--<a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>-->
+                        <div v-if="visivel" class="columns">
+                            <a class="button is-primary" @click.prevent="showResposta(compromisso)">Novo Detalhe</a>
                         </div>
                     </div>
                 </div>
@@ -218,7 +218,7 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Resposta: {{ compromissos.nivel }}</p>
+          <p class="modal-card-title">Resposta: {{ compDet.nivel }}</p>
           <button class="delete" @click.prevent="showModal=false"></button>
         </header>
         <section class="modal-card-body">
@@ -331,7 +331,7 @@ export default {
         compromissosDet: [],
         showModalNew: false,
         showModalForum: false,
-        visivel: false,
+        visivel: true,
         msg: '',
         compDet: {
             "detalhes": '',
@@ -339,14 +339,15 @@ export default {
             "idUsuario": 4,
             "idStatus": 1,
             "dataHoraAgend": '',
-            "nivel": 1 
+            "nivel": ''
         },
         status: [],  
         usuarios: [
           { text: 'KEL', value: 4}
         ],
         idResposta: '',
-                
+        ultimoDet: '',
+          
         // datapicker
         startTime: {
             time: ''
@@ -413,17 +414,16 @@ export default {
     // METODOS ======================================
     
     methods: {
-      contar(nivel){
-        this.compromissosDet.nivel.length(nivel)
-      },
+      
       responder(){
         let x = 0
         let y = 999999
         window.scrollBy(x,y)
+        this.ultimoDet = this.compromissosDet.slice(-1)[0]
         
       },
-      ordenarDets(){
-        this.compromissosDet.sort(function(){return})
+      btnSubDets(){
+        
       },
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
@@ -456,8 +456,9 @@ export default {
           this.errors.push(e)
         })
       },
-      showResposta(){
+      showResposta(compromisso){
         this.showModal = true;
+        this.compDet.nivel = compromisso.nivel
       },
       showLoading(){
         this.isLoading=true;
@@ -502,12 +503,11 @@ export default {
       },
       salvarDet(){
           this.validar()
-          
           let t = this
-          
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          this.compDet.nivel = this.compDet.nivel + 1
+          t.compDet.nivel = t.ultimoDet.nivel
+          t.compDet.nivel++
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
@@ -543,9 +543,7 @@ export default {
       },
       salvarSubDet(){
           this.validar()
-          
           let t = this
-          
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
           
