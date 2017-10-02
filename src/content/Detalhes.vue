@@ -329,8 +329,6 @@ export default {
         selected: {},
         compromissos: [],
         compromissosDet: [],
-        showModalNew: false,
-        showModalForum: false,
         visivel: true,
         msg: '',
         compDet: {
@@ -339,7 +337,7 @@ export default {
             "idUsuario": 4,
             "idStatus": 1,
             "dataHoraAgend": '',
-            "nivel": ''
+            "nivel": 0
         },
         status: [],  
         usuarios: [
@@ -422,7 +420,7 @@ export default {
         this.ultimoDet = this.compromissosDet.slice(-1)[0]
         
       },
-      btnSubDets(){
+      btnSubDets(element, index, array){
         
       },
       validar() {
@@ -457,7 +455,7 @@ export default {
         })
       },
       showResposta(compromisso){
-        this.showModal = true;
+        this.showModal = true
         this.compDet.nivel = compromisso.nivel
       },
       showLoading(){
@@ -506,8 +504,12 @@ export default {
           let t = this
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
-          t.compDet.nivel = t.ultimoDet.nivel
+          if(t.compDet.nivel==0){
+             t.compDet.nivel = 1
+          }
+          else {t.compDet.nivel = t.ultimoDet.nivel
           t.compDet.nivel++
+          }
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
              .then((response) => {
