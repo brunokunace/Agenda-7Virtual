@@ -78,7 +78,7 @@
      <!-- responder --> 
       
      <!-- detalhes -->
-    <div v-for="compromisso in compromissosDet" >
+    <div v-for="(compromisso, index) in compromissosDet" >
     
         <template v-if="compromisso.nivel.length==1">
         <div class="columns">
@@ -113,7 +113,7 @@
                         </div>
                     </div>  
 
-                    <a class="button is-primary" @click.prevent="showResposta(compromisso.idCompDet)">Novo Detalhe</a>
+                    <a class="button is-primary" v-if="index == 0" @click.prevent="showResposta(compromisso.idCompDet)">Novo Detalhe</a>
 
                     
                 </div>
