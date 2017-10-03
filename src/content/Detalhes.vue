@@ -78,9 +78,9 @@
      <!-- responder --> 
       
      <!-- detalhes -->
-    <div v-for="compromisso in compromissosDet">
+    <div v-for="compromisso in compromissosDet" >
     
-        <!--<template v-if="compromisso.nivel.length==1">
+        <template v-if="compromisso.nivel.length==1">
         <div class="columns">
             <div class="column is-1">
             </div>
@@ -117,18 +117,18 @@
 
                     
                 </div>
-                 fim box principal 
+                <!-- fim box principal -->
             </div>
             <div class="column is-1">
             </div>
         </div>
-        </template>-->
+        </template>
         
         
         <!-- sub-resposta par -->
         
         <template v-if="compromisso.nivel%2==0">
-            
+            <div style="margin-top: 11px;"></div>
             <div class="columns">
                 <div class="column is-3">
                 </div>
@@ -160,7 +160,7 @@
                             nivel:  {{compromisso.nivel}}
                         </div>
                         <div v-if="visivel" class="subResp" id="subResp">
-                            <a class="button is-primary" @click.prevent="showResposta()">Novo Detalhe</a>
+                            <a class="button is-primary" @click="showResposta(compromisso)">Novo Detalhe</a>
                         </div>
                     </div>
                 </div>
@@ -171,6 +171,7 @@
         
         <!-- sub-resposta impar -->
         <template v-else="compromisso.nivel%2==1">
+            <div style="margin-top: 11px;"></div>
             <div class="columns">
                 <div class="column">
                     <div class="box" id="coment">
@@ -197,10 +198,10 @@
                             <label class="label">Mensagem:</label>
                             <div style="font-size: 30px;">{{compromisso.detalhes}}</div>
                             </div>
-                            nivel:  {{compromisso.nivel}}
+                            <div>nivel:  {{compromisso.nivel}}</div>
                         </div>
-                        <div v-if="visivel" class="subResp" id="subResp">
-                            <a class="button is-primary" @click.prevent="showResposta(compromisso)">Novo Detalhe</a>
+                        <div v-if="visivel">
+                            <a class="button is-primary" @click="showResposta(compromisso)">Novo Detalhe</a>
                         </div>
                     </div>
                 </div>
@@ -218,7 +219,7 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Resposta: {{ compDet.nivel }}</p>
+          <p class="modal-card-title">Resposta nível: {{ idResposta }}</p>
           <button class="delete" @click.prevent="showModal=false"></button>
         </header>
         <section class="modal-card-body">
@@ -329,7 +330,7 @@ export default {
         selected: {},
         compromissos: [],
         compromissosDet: [],
-        visivel: false,
+        visivel: true,
         msg: '',
         compDet: {
             "detalhes": '',
@@ -422,6 +423,8 @@ export default {
         
       },
       btnSubDets(){
+        
+        
       },
       validar() {
         if (this.compDet.detalhes==null || this.compDet.detalhes=='') {
@@ -455,8 +458,8 @@ export default {
         })
       },
       showResposta(compromisso){
+        this.idResposta = compromisso.nivel
         this.showModal = true
-        this.compDet.nivel = compromisso.nivel
       },
       showLoading(){
         this.isLoading=true;
@@ -545,6 +548,7 @@ export default {
           let t = this
           t.compDet.dataHoraAgend = t.startTime.time
           t.compDet.idUsuario = 4
+          t.compDet.nivel = t.idResposta
           
           
              this.$http.post(ENDPOINT + 'api/comp/novoDet', this.compDet)
@@ -597,5 +601,8 @@ export default {
     }
     .enviar {
         margin-top: 25px;
+    }
+    .column {
+        padding: 0px;
     }
 </style>
